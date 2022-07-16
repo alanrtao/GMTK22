@@ -16,8 +16,12 @@ public abstract class BaseRollable : MonoBehaviour
     protected (int, Vector3)[] m_Faces;
 
     protected virtual void Start()
-    { 
-        m_Faces = Faces0;
+    {
+        m_Faces = new (int, Vector3)[Faces0.Length];
+        for(int i = 0; i < Faces0.Length; i++)
+        {
+            m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
+        }
     }
 
     protected void Place(Orientation o)
@@ -96,14 +100,23 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected void UpdateFaces(Orientation end) {
         var rot = end.rotation_LS;
+
         for(int i = 0; i < Faces0.Length; i++)
         {
-            m_Faces[i].Item2 = rot * Faces0[i].Item2;
+            Debug.Log(m_Faces[i].Item2);
+            m_Faces[i] = (m_Faces[i].Item1, rot * Faces0[i].Item2);
+            Debug.Log(m_Faces[i].Item2);
         }
+
+        var ordered = OrderedFaces();
+        Debug.Log(string.Join(", ", ordered));
     }
 
-    protected int FindClosestCurrFace(Vector3 dir)
-        => m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First().Item1;
+    protected int FindClosestCurrFace(Vector3 dir) {
+        var i = m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First();
+        // Debug.Log($"{dir} :: {i.Item2} = {i.Item1}");
+        return i.Item1;
+    }
 
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 }
