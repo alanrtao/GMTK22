@@ -73,7 +73,6 @@ public class Player : BaseRollable
             if (e == pred)
             {
                 stamina = Mathf.Max(0, stamina - 1);
-                var ordered = OrderedFaces();
                 var top = FindClosestCurrFace(Vector3.up);
                 Attack(top, e);
                 Debug.Log($"Player attacks enemy at {pred.position_GRD}");
