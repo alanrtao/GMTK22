@@ -31,13 +31,6 @@ public class EnemyPool : MonoBehaviour
             yield return new WaitForSeconds(e.ActionStagesTime);
         }
 
-        if (m_EnemyPool.Count > 0)
-        {
-            var eLast = m_EnemyPool.Last();
-            var p = GameManager.Map.Fold(Mathf.FloorToInt(eLast.transform.position.z), Mathf.FloorToInt(eLast.transform.position.x));
-            GameManager.Map.EntityObstacle(p);
-        }
-
         Player.Instance.blocked = false;
         Player.Instance.Turn();
     }

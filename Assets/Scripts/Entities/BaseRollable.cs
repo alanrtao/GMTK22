@@ -7,6 +7,22 @@ using Cinemachine;
 
 public abstract class BaseRollable : MonoBehaviour
 {
+    public int HP
+    {
+        get => m_HP;
+        set
+        {
+            if (value != m_HP)
+            {
+                if (value < m_HP) StartCoroutine(TakeDamageAnimation(m_HP - value));
+                m_HP = Mathf.Max(0, value);
+                if (m_HP == 0) Die();
+            }
+        }
+    }
+
+    [SerializeField] protected int m_HP;
+
     public Transform RollableRoot => m_RollableRoot;
     [SerializeField] Transform m_RollableRoot;
 
@@ -35,37 +51,41 @@ public abstract class BaseRollable : MonoBehaviour
 
     public virtual void Move(Direction d) => Move(new List<Direction>(){d});
 
+    private List<Direction> pending;
     public virtual void Move(List<Direction> ds)
     {
         if (IsMoving) return;
 
+        pending = ds;
+
         IsMoving = true;
-        var p0 = GameManager.Map.Fold(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
-        GameManager.Map.RemoveEntityObstacle(p0);
+        var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+        GameManager.Map.SetObstacle(p0.Item1, p0.Item2, null);
 
         void terminate(Orientation end)
         {
+            var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+            GameManager.Map.SetObstacle(p0.Item1, p0.Item2, this);
             IsMoving = false;
             UpdateFaces(end);
         }
 
-        if (ds.Count == 1)
-        {
-            StartCoroutine(RLerp(ds[0], terminate));
-            return;
-        }
-
-        var lf = RLerp(ds[ds.Count - 1], terminate);
-        for (var i = ds.Count - 2; i >= 0; i--) {
-            var l = RLerp(ds[i], (_) => StartCoroutine(lf));
-            if (i == 0) StartCoroutine(l);
-        }
+        StartCoroutine(RLerp(terminate));
     }
 
     public static readonly float tMove = 0.25f;
     protected bool IsMoving = false;
-    protected IEnumerator RLerp(Direction d, Action<Orientation> complete = null) {
+    protected IEnumerator RLerp(Action<Orientation> complete = null) {
         float t_ = 0;
+
+        if (pending.Count == 0)
+        {
+            complete(this);
+            yield break;
+        }
+
+        var d = pending[0];
+        pending.RemoveAt(0);
 
         Orientation start = this;
         Orientation end = d * start;
@@ -79,12 +99,12 @@ public abstract class BaseRollable : MonoBehaviour
             yield return null;
         }
 
-        var p1 = GameManager.Map.Fold(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
-        GameManager.Map.EntityObstacle(p1);
-
         Place(end);
 
-        complete(end);
+        if (pending.Count == 0)
+            complete(end);
+        else
+            StartCoroutine(RLerp(complete));
     }
 
 
@@ -103,22 +123,58 @@ public abstract class BaseRollable : MonoBehaviour
 
         for(int i = 0; i < Faces0.Length; i++)
         {
-            Debug.Log(m_Faces[i].Item2);
             m_Faces[i] = (m_Faces[i].Item1, rot * Faces0[i].Item2);
-            Debug.Log(m_Faces[i].Item2);
         }
-
-        var ordered = OrderedFaces();
-        Debug.Log(string.Join(", ", ordered));
     }
 
     protected int FindClosestCurrFace(Vector3 dir) {
         var i = m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First();
-        // Debug.Log($"{dir} :: {i.Item2} = {i.Item1}");
         return i.Item1;
     }
 
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
+
+    protected abstract void Die();
+
+    private Vector3 bufP;
+    private Quaternion bufR;
+    protected ActionStage AttackAction(BaseRollable target, int attack) => new ActionStage(0.25f, (t) =>
+    {
+        if (t == 0) {
+            bufP = transform.position;
+            bufR = RollableRoot.rotation;
+            return;
+        } else if (t == 1)
+        {
+            transform.position = bufP;
+            RollableRoot.rotation = bufR;
+            bufP = Vector3.zero;
+            bufR = Quaternion.identity;
+            return;
+        }
+
+        var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
+        var parab = 1 - (1 - prog) * (1 - prog);
+
+        transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+
+        RollableRoot.rotation = Quaternion.AngleAxis(
+            parab * 10f,
+            Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
+            bufR;
+    });
+
+    [SerializeField] protected CinemachineImpulseSource collisionSource;
+    protected abstract IEnumerator TakeDamageAnimation(int damage);
+
+
+    public class ActionStage
+    {
+        public float t;
+        public Action<float> Do;
+
+        public ActionStage(float t, Action<float> Do) { this.t = t; this.Do = Do; }
+    }
 }
 
 public class Orientation {
@@ -155,7 +211,7 @@ public class Orientation {
             (Mathf.FloorToInt(a.position_GRD.Item1) == Mathf.FloorToInt(b.position_GRD.Item1)) &&
             (Mathf.FloorToInt(a.position_GRD.Item2) == Mathf.FloorToInt(b.position_GRD.Item2));
 
-public static bool operator !=(Orientation a, Orientation b) => !(a == b);
+    public static bool operator !=(Orientation a, Orientation b) => !(a == b);
 
     public static implicit operator Orientation(BaseRollable mb) => new Orientation(
         (Mathf.FloorToInt(mb.transform.position.z),
