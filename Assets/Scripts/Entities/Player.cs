@@ -8,15 +8,16 @@ public class Player : BaseRollable
     public static Player Instance { get; private set; }
 
     public int MAX_STAMINA;
-    protected int stamina;
+    public int stamina;
 
     void Awake()
     {
         Instance = this;
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         blocked = false;
         Turn();
     }
@@ -69,9 +70,9 @@ public class Player : BaseRollable
 
         foreach (var e in GameManager.Pool.Pool)
         {
-            stamina = Mathf.Max(0, stamina - 1);
             if (e == pred)
             {
+                stamina = Mathf.Max(0, stamina - 1);
                 var ordered = OrderedFaces();
                 var top = FindClosestCurrFace(Vector3.up);
                 Attack(top, e);

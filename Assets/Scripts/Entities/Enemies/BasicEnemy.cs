@@ -19,8 +19,6 @@ public class BasicEnemy : BaseEnemy
             stages.Add(ShiftCamera(GameManager.Pool.Pool[i - 1], this));
         }
 
-        stages.Add(right ? MoveAction(Direction.RIGHT) : MoveAction(Direction.LEFT));
-
         var ex = Mathf.FloorToInt(Player.Instance.transform.position.x);
         var ez = Mathf.FloorToInt(Player.Instance.transform.position.z);
         var sx = Mathf.FloorToInt(transform.position.x);
@@ -29,8 +27,6 @@ public class BasicEnemy : BaseEnemy
         stages.Add(MovesAction(moves));
 
         if (i == GameManager.Pool.Pool.Count - 1)
-        {
             stages.Add(ShiftCamera(this, Player.Instance));
-        }
     }
 }

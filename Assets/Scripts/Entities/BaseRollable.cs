@@ -13,12 +13,10 @@ public abstract class BaseRollable : MonoBehaviour
     public CinemachineVirtualCamera vCam => m_vCam;
     [SerializeField] private CinemachineVirtualCamera m_vCam;
 
-    [SerializeField] private Transform[] m_OutwardFaces;
-    [SerializeField] private Transform[] m_InwardFaces;
-
     protected (int, Vector3)[] m_Faces;
-    private void Awake()
-    {
+
+    protected virtual void Start()
+    { 
         m_Faces = Faces0;
     }
 
@@ -41,11 +39,11 @@ public abstract class BaseRollable : MonoBehaviour
         var p0 = GameManager.Map.Fold(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
         GameManager.Map.RemoveEntityObstacle(p0);
 
-        Action<Orientation> terminate = (end) =>
+        void terminate(Orientation end)
         {
             IsMoving = false;
             UpdateFaces(end);
-        };
+        }
 
         if (ds.Count == 1)
         {
