@@ -21,11 +21,15 @@ public class Map : MonoBehaviour
 
     public int Weight(int c1, int c2) => Mathf.Abs(Grid(c1) - Grid(c2));
 
+    public int Fold((float, float) p) => Fold(Mathf.FloorToInt(p.Item1), Mathf.FloorToInt(p.Item2));
     public int Fold((int, int) p) => Fold(p.Item1, p.Item2);
 
     /// <returns>z, x</returns>
     public (int, int) Expand(int f) => (f / WIDTH, f % WIDTH);
 
+    public int Grid(float z, float x) => Grid(
+        Mathf.FloorToInt(z), Mathf.FloorToInt(x)
+        );
     public int Grid(int z, int x) => m_Grid[Fold(z, x)];
     public int Grid(int c) => m_Grid[c];
 
@@ -42,5 +46,8 @@ public class Map : MonoBehaviour
     public void EntityObstacle(int c) => m_Grid[c] = int.MaxValue - 1;
     public void RemoveEntityObstacle(int c) => m_Grid[c] = 0;
 
+    public bool Legal((float, float) p) => Legal(p.Item1, p.Item2);
+    public bool Legal(float z, float x) => Legal(Mathf.FloorToInt(z), Mathf.FloorToInt(x));
+    public bool Legal((int, int) p) => Legal(p.Item1, p.Item2);
     public bool Legal(int z, int x) => (z >= 0 && z < WIDTH) && (x >= 0 && x < HEIGHT);
 }

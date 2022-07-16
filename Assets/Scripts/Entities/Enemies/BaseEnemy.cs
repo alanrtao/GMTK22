@@ -6,13 +6,32 @@ using System;
 
 public abstract class BaseEnemy : BaseRollable
 {
-    public int HP => m_HP;
+    public int HP
+    {
+        get => m_HP;
+        set
+        {
+            if (value != m_HP)
+            {
+                m_HP = Mathf.Max(0, value);
+                if (m_HP == 0) Die();
+            }
+        }
+    }
     [SerializeField] protected int m_HP;
 
     public List<ActionStage> stages;
     public float ActionStagesTime => stages.Select(a => a.t).Sum();
 
     public abstract void UpdateStages(int index);
+
+
+    public virtual void TakeDamage(int damage) => HP -= damage;
+
+    protected virtual void Die() {
+        GameManager.Pool.Pool.Remove(this);
+        gameObject.SetActive(false);
+    }
 
     public IEnumerator Turn()
     {
@@ -45,12 +64,16 @@ public abstract class BaseEnemy : BaseRollable
         }
     }
 
-    protected virtual float Heuristic(int sz, int sx, int z, int x) => (sz - z) * (sz - z) + (sx - x) * (sx - x);
+    protected virtual float Heuristic(int ez, int ex, int z, int x) => Mathf.Sqrt((ez - z) * (ez - z) + (ex - x) * (ex - x));
 
     protected List<Direction> AStar(int sz, int sx, int ez, int ex, int max_step)
     {
+
+        Debug.Log($"Enemy {GetInstanceID()} try move from {sz},{sx} to {ez},{ex}");
+
         var start = GameManager.Map.Fold(sz, sx);
         var goal = GameManager.Map.Fold(ez, ex);
+
         var open = new List<int> { start };
         var cameFrom = new int[GameManager.Map.Count];
         var g = new float[GameManager.Map.Count];
@@ -62,16 +85,14 @@ public abstract class BaseEnemy : BaseRollable
         }
 
         g[start] = 0;
-        f[start] = Heuristic(sz, sx, sz, sx);
+        f[start] = Heuristic(ez, ex, sz, sx);
 
-        int step = 0;
         while(open.Count > 0)
         {
-            step++;
             var curr = open.OrderBy(i => f[i]).First();
             if (curr == goal)
             {
-                return Reconstruct(cameFrom, curr).Take(max_step).ToList();
+                return Reconstruct(cameFrom, curr); //.Take(max_step).ToList();
             }
 
             open.Remove(curr);
@@ -95,7 +116,9 @@ public abstract class BaseEnemy : BaseRollable
                 {
                     cameFrom[n] = curr;
                     g[n] = gTentative;
-                    f[n] = gTentative + f[n];
+                    var nExp = GameManager.Map.Expand(n);
+                    f[n] = gTentative + Heuristic(ez, ex, nExp.Item1, nExp.Item2);
+
                     if (!open.Contains(n)) open.Add(n);
                 }
             }
@@ -117,28 +140,30 @@ public abstract class BaseEnemy : BaseRollable
 
         for(int i = total.Count - 1; i > 0; i--)
         {
-            var deltaZ = total[i].Item1 - total[i - 1].Item1;
+            var deltaZ = total[i - 1].Item1 - total[i].Item1;
             if (deltaZ > 0)
             {
                 ds.Add(Direction.LEFT);
-                break;
+                continue;
             }
             if (deltaZ < 0)
             {
                 ds.Add(Direction.RIGHT);
+                continue;
             }
-            var deltaX = total[i].Item2 - total[i - 1].Item2;
+            var deltaX = total[i - 1].Item2 - total[i].Item2;
             if (deltaX > 0)
             {
                 ds.Add(Direction.UP);
-                break;
+                continue;
             }
             if (deltaX < 0)
             {
                 ds.Add(Direction.DOWN);
-                break;
+                continue;
             }
         }
+
         return ds;
     }
 
@@ -153,6 +178,12 @@ public abstract class BaseEnemy : BaseRollable
                 from.vCam.enabled = false;
                 to.vCam.enabled = true;
             }
+        });
+
+    protected ActionStage MovesAction(List<Direction> ds)
+        => new ActionStage(tMove * ds.Count, (t) =>
+        {
+            if (t == 0) Move(ds);
         });
 
     protected ActionStage MoveAction(Direction d)

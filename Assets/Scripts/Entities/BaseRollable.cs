@@ -13,6 +13,15 @@ public abstract class BaseRollable : MonoBehaviour
     public CinemachineVirtualCamera vCam => m_vCam;
     [SerializeField] private CinemachineVirtualCamera m_vCam;
 
+    [SerializeField] private Transform[] m_OutwardFaces;
+    [SerializeField] private Transform[] m_InwardFaces;
+
+    protected (int, Vector3)[] m_Faces;
+    private void Awake()
+    {
+        m_Faces = Faces0;
+    }
+
     protected void Place(Orientation o)
     {
         transform.position = new Vector3(
@@ -22,25 +31,42 @@ public abstract class BaseRollable : MonoBehaviour
         m_RollableRoot.localRotation = o.rotation_LS;
     }
 
-    public virtual void Move(Direction d)
+    public virtual void Move(Direction d) => Move(new List<Direction>(){d});
+
+    public virtual void Move(List<Direction> ds)
     {
         if (IsMoving) return;
 
-        // TODO: add terrain constraints
+        IsMoving = true;
+        var p0 = GameManager.Map.Fold(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+        GameManager.Map.RemoveEntityObstacle(p0);
 
-        Orientation o = this;
-        StartCoroutine(RLerp(o, d * o));
+        Action<Orientation> terminate = (end) =>
+        {
+            IsMoving = false;
+            UpdateFaces(end);
+        };
+
+        if (ds.Count == 1)
+        {
+            StartCoroutine(RLerp(ds[0], terminate));
+            return;
+        }
+
+        var lf = RLerp(ds[ds.Count - 1], terminate);
+        for (var i = ds.Count - 2; i >= 0; i--) {
+            var l = RLerp(ds[i], (_) => StartCoroutine(lf));
+            if (i == 0) StartCoroutine(l);
+        }
     }
 
     public static readonly float tMove = 0.25f;
     protected bool IsMoving = false;
-    protected IEnumerator RLerp(Orientation start, Orientation end) {
+    protected IEnumerator RLerp(Direction d, Action<Orientation> complete = null) {
         float t_ = 0;
 
-        IsMoving = true;
-
-        var p0 = GameManager.Map.Fold(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
-        GameManager.Map.RemoveEntityObstacle(p0);
+        Orientation start = this;
+        Orientation end = d * start;
 
         while (t_ < tMove) {
             var p = t_ / tMove;
@@ -55,8 +81,33 @@ public abstract class BaseRollable : MonoBehaviour
         GameManager.Map.EntityObstacle(p1);
 
         Place(end);
-        IsMoving = false;
+
+        complete(end);
     }
+
+
+    private static readonly (int, Vector3)[] Faces0 = new (int, Vector3)[]
+    {
+        (2, -Vector3.forward), // -Z
+        (5, Vector3.forward), // +Z
+        (4, Vector3.left), // -X
+        (3, Vector3.right), // +X
+        (6, Vector3.down), // -Y
+        (1, Vector3.up)  // +Y
+    };
+
+    protected void UpdateFaces(Orientation end) {
+        var rot = end.rotation_LS;
+        for(int i = 0; i < Faces0.Length; i++)
+        {
+            m_Faces[i].Item2 = rot * Faces0[i].Item2;
+        }
+    }
+
+    protected int FindClosestCurrFace(Vector3 dir)
+        => m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First().Item1;
+
+    protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 }
 
 public class Orientation {
@@ -89,10 +140,17 @@ public class Orientation {
             Quaternion.Slerp(a.rotation_LS, b.rotation_LS, t));
     }
 
+    public static bool operator ==(Orientation a, Orientation b) =>
+            (Mathf.FloorToInt(a.position_GRD.Item1) == Mathf.FloorToInt(b.position_GRD.Item1)) &&
+            (Mathf.FloorToInt(a.position_GRD.Item2) == Mathf.FloorToInt(b.position_GRD.Item2));
+
+public static bool operator !=(Orientation a, Orientation b) => !(a == b);
+
     public static implicit operator Orientation(BaseRollable mb) => new Orientation(
         (Mathf.FloorToInt(mb.transform.position.z),
         Mathf.FloorToInt(mb.transform.position.x)),
         mb.RollableRoot.rotation);
+
 }
 
 /// <summary>
@@ -105,6 +163,16 @@ public enum Direction
     LEFT = 2,
     RIGHT = -2,
     NONE = 0
+};
+
+public enum Face
+{
+    ZNEG = 0,
+    ZPOS = 1,
+    XNEG = 2,
+    XPOS = 3,
+    YNEG = 4,
+    YNET = 5
 };
 
 public static class DirectionExtensions

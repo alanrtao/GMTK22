@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Player : BaseRollable
 {
@@ -42,6 +43,8 @@ public class Player : BaseRollable
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             {
                 Move(Direction.RIGHT);
+            } else if (Input.GetKeyDown(KeyCode.Space)) {
+                Ultimate();
             } else if (Input.GetKeyDown(KeyCode.Return))
             {
                 GameManager.Pool.StartEnemyTurns();
@@ -52,10 +55,41 @@ public class Player : BaseRollable
         }
     }
 
+    public virtual void Ultimate() => Debug.Log("ult");
+
+    public virtual void Attack(int damage, BaseEnemy enemy)
+    {
+        enemy.TakeDamage(damage);
+    }
+
     public override void Move(Direction d)
     {
-        base.Move(d);
-        stamina = Mathf.Max(0, stamina - 1);
+        Orientation curr = this;
+        Orientation pred = d * curr;
+
+        foreach (var e in GameManager.Pool.Pool)
+        {
+            stamina = Mathf.Max(0, stamina - 1);
+            if (e == pred)
+            {
+                var ordered = OrderedFaces();
+                var top = FindClosestCurrFace(Vector3.up);
+                Attack(top, e);
+                Debug.Log($"Player attacks enemy at {pred.position_GRD}");
+                return;
+            }
+        }
+
+        Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
+
+        if (GameManager.Map.Legal(pred.position_GRD))
+        {
+            base.Move(d);
+            stamina = Mathf.Max(0, stamina - 1);
+        } else
+        {
+            Debug.Log("invalid move");
+        }
     }
 
     public void Turn()

@@ -22,15 +22,11 @@ public class BasicEnemy : BaseEnemy
         stages.Add(right ? MoveAction(Direction.RIGHT) : MoveAction(Direction.LEFT));
 
         var ex = Mathf.FloorToInt(Player.Instance.transform.position.x);
-        var ez = Mathf.FloorToInt(Player.Instance.transform.position.y);
+        var ez = Mathf.FloorToInt(Player.Instance.transform.position.z);
         var sx = Mathf.FloorToInt(transform.position.x);
         var sz = Mathf.FloorToInt(transform.position.z);
         var moves = AStar(sz, sx, ez, ex, 3);
-
-        foreach(var move in moves)
-        {
-            stages.Add(MoveAction(move));
-        }
+        stages.Add(MovesAction(moves));
 
         if (i == GameManager.Pool.Pool.Count - 1)
         {
