@@ -23,7 +23,7 @@ public class Render : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            Debug.Log("shift press"); //debug delete later
+            //Debug.Log("shift press"); //debug delete later
 
             
 
@@ -32,13 +32,13 @@ public class Render : MonoBehaviour
                 if(Vector3.Dot(mesh[i].transform.forward, Camera.main.transform.forward) > 0)
                 {
                     mesh[i].enabled = false;
-                    Debug.Log("render diabled" + i);
+                    //Debug.Log("render diabled" + i);
                     //will not enable render after key is released
                 }
                 else
                 {
                     mesh[i].enabled = true;
-                    Debug.Log("render enable " + i);
+                    //Debug.Log("render enable " + i);
                 }
             }
 
@@ -48,7 +48,7 @@ public class Render : MonoBehaviour
         }
         else
         {
-            Debug.Log("shift released");
+            //Debug.Log("shift released");
             for (int i = 0; i < mesh.Count; i++)
             {
                     mesh[i].enabled = true;
