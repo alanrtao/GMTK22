@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Render : MonoBehaviour
 {
-    public List<MeshRenderer> mesh;
+    public List<SpriteRenderer> mesh;
 
     // Update is called once per frame
     void Update()
