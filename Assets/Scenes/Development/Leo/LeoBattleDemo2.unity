@@ -1125,7 +1125,7 @@ MonoBehaviour:
   BasicEnemyPrototype: {fileID: 2952246987652159790, guid: d20918f3f459c4f069482139c9a9decb, type: 3}
   RangedEnemyPrototype: {fileID: 0}
   EnemyCount: 50
-  SpawnPerTurn: 2
+  SpawnPerTurn: 1
   TurnsPerWave: 8
   AlreadySpawned: 0
   InEnemyTurn: 0
