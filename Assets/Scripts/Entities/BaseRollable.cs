@@ -141,7 +141,59 @@ public abstract class BaseRollable : MonoBehaviour
         return i.Item1;
     }
 
+    protected int FindClosestIdxFace(Vector3 dir)
+    {
+        var dist = float.MaxValue;
+        int min = -1;
+        for(int i = 0; i < m_Faces.Length; i++) {
+            if (Vector3.Distance(dir, m_Faces[i].Item2) < dist) {
+                min = i;
+                dist = Vector3.Distance(dir, m_Faces[i].Item2);
+            }
+        }
+        return min;
+    }
+
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
+
+
+    public void AddToOriginalOrientationFace(int add, CubemapFace face)
+    {
+        var idx = CubeFaceToIndex(face);
+        m_Faces[idx].Item1 += add;
+        if (m_Faces[idx].Item1 < 0) m_Faces[idx].Item1 = 0;
+    }
+
+    public static int CubeFaceToIndex(CubemapFace face)
+    {
+        switch (face)
+        {
+            case CubemapFace.NegativeZ: return 0;
+            case CubemapFace.PositiveZ: return 1;
+            case CubemapFace.NegativeX: return 2;
+            case CubemapFace.PositiveX: return 3;
+            case CubemapFace.NegativeY: return 4;
+            case CubemapFace.PositiveY: return 5;
+            default: return -1;
+        }
+    }
+
+    public void AddToFace(int add, Vector3 dir)
+    {
+        var idx = FindClosestIdxFace(dir);
+        m_Faces[idx].Item1 += add;
+        if (m_Faces[idx].Item1 < 0) m_Faces[idx].Item1 = 0;
+    }
+
+    public void AddToAllFaces(int add)
+    {
+        m_Faces = m_Faces.Select(s => {
+            s.Item1 -= add;
+            if (s.Item1 < 0) s.Item1 = 0;
+            return s;
+        })
+            .ToArray();
+    }
 
     protected abstract void Die();
 
