@@ -25,11 +25,12 @@ public abstract class BaseRollable : MonoBehaviour
     [SerializeField] protected int m_HP;
 
     public Transform RollableRoot => m_RollableRoot;
-    [SerializeField] Transform m_RollableRoot;
+    [SerializeField] protected Transform m_RollableRoot;
 
     public CinemachineVirtualCamera vCam => m_vCam;
     [SerializeField] private CinemachineVirtualCamera m_vCam;
 
+    public int[] Faces;
     protected (int, Vector3)[] m_Faces;
 
     protected virtual IEnumerator Start()
@@ -37,12 +38,17 @@ public abstract class BaseRollable : MonoBehaviour
         while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
 
         m_Faces = new (int, Vector3)[Faces0.Length];
-        for(int i = 0; i < Faces0.Length; i++)
+        for (int i = 0; i < Faces0.Length; i++)
         {
             m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
         }
 
-        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation) this).position_GRD) * GameManager.Map.AltModifier;
+        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation)this).position_GRD) * GameManager.Map.AltModifier;
+    }
+
+    protected virtual void Update()
+    {
+        if (m_Faces != null) Faces = m_Faces.Select(i => i.Item1).ToArray();
     }
 
     protected void Place(Orientation o, float altitude)
@@ -54,7 +60,7 @@ public abstract class BaseRollable : MonoBehaviour
         m_RollableRoot.localRotation = o.rotation_LS;
     }
 
-    public virtual void Move(Direction d) => Move(new List<Direction>(){d});
+    public virtual void Move(Direction d) => Move(new List<Direction>() { d });
 
     private List<Direction> pending;
     public virtual void Move(List<Direction> ds)
@@ -64,14 +70,17 @@ public abstract class BaseRollable : MonoBehaviour
         pending = ds;
 
         IsMoving = true;
-        var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+        var p0 = (Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x));
         GameManager.Map.SetObstacle(p0.Item1, p0.Item2, null);
 
         void terminate(Orientation end)
         {
-            var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+            var p0 = (Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x));
             GameManager.Map.SetObstacle(p0.Item1, p0.Item2, this);
             IsMoving = false;
+            transform.position = new Vector3(Mathf.RoundToInt(transform.position.x), transform.position.y, Mathf.RoundToInt(transform.position.z));
+            //m_RollableRoot.up = new Vector3[] { Vector3.up, Vector3.down, Vector3.forward, Vector3.back, Vector3.left, Vector3.right }
+            //    .OrderBy(s => Vector3.Distance(m_RollableRoot.up, s)).First();
             UpdateFaces(end);
 
             //AfterMovement <--
@@ -81,8 +90,10 @@ public abstract class BaseRollable : MonoBehaviour
     }
 
     public static readonly float tMove = 0.25f;
-    protected bool IsMoving = false;
+    public bool IsMoving = false;
     protected IEnumerator RLerp(Action<Orientation> complete = null) {
+
+        IsMoving = true;
         float t_ = 0;
 
         if (pending.Count == 0)
@@ -99,7 +110,7 @@ public abstract class BaseRollable : MonoBehaviour
 
         while (t_ < tMove) {
             var p = t_ / tMove;
-            var o = Orientation.Lerp(start, end, 1 - Mathf.Pow(1-p, 3));
+            var o = Orientation.Lerp(start, end, 1 - Mathf.Pow(1 - p, 3));
             Place(o, Mathf.Lerp(
                 GameManager.Map.Grid(start.position_GRD),
                 GameManager.Map.Grid(end.position_GRD),
@@ -113,7 +124,11 @@ public abstract class BaseRollable : MonoBehaviour
         Place(end, GameManager.Map.Grid(end.position_GRD));
 
         if (pending.Count == 0)
+        {
             complete(end);
+            yield return new WaitForSeconds(0.1f);
+            IsMoving = false;
+        }
         else
             StartCoroutine(RLerp(complete));
     }
@@ -132,7 +147,7 @@ public abstract class BaseRollable : MonoBehaviour
     protected void UpdateFaces(Orientation end) {
         var rot = end.rotation_LS;
 
-        for(int i = 0; i < Faces0.Length; i++)
+        for (int i = 0; i < Faces0.Length; i++)
         {
             m_Faces[i] = (m_Faces[i].Item1, rot * Faces0[i].Item2);
         }
@@ -147,7 +162,7 @@ public abstract class BaseRollable : MonoBehaviour
     {
         var dist = float.MaxValue;
         int min = -1;
-        for(int i = 0; i < m_Faces.Length; i++) {
+        for (int i = 0; i < m_Faces.Length; i++) {
             if (Vector3.Distance(dir, m_Faces[i].Item2) < dist) {
                 min = i;
                 dist = Vector3.Distance(dir, m_Faces[i].Item2);
@@ -158,7 +173,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 
-    
+
 
     public static int CubeFaceToIndex(CubemapFace face)
     {
@@ -217,35 +232,45 @@ public abstract class BaseRollable : MonoBehaviour
 
     private Vector3 bufP;
     private Quaternion bufR;
-    protected ActionStage AttackAction(BaseRollable target, int attack) => new ActionStage(0.25f, (t) =>
+    protected ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
-        if (t == 0) {
+        if (t == 0)
+        {
             target.HP -= attack;
-            bufP = transform.position;
-            bufR = RollableRoot.rotation;
+            if (renderAnimation)
+            {
+                bufP = transform.position;
+                bufR = RollableRoot.rotation;
+            }
             return;
         } else if (t == 1)
         {
-            transform.position = bufP;
-            RollableRoot.rotation = bufR;
-            bufP = Vector3.zero;
-            bufR = Quaternion.identity;
-
-            //AfterAttack_Here;
-
+            if (renderAnimation)
+            {
+                transform.position = bufP;
+                RollableRoot.rotation = bufR;
+                bufP = Vector3.zero;
+                bufR = Quaternion.identity;
+            }
             return;
         }
 
-        var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
-        var parab = 1 - (1 - prog) * (1 - prog);
+        if (renderAnimation)
+        {
 
-        transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+            var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
+            var parab = 1 - (1 - prog) * (1 - prog);
 
-        RollableRoot.rotation = Quaternion.AngleAxis(
-            parab * 10f,
-            Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
-            bufR;
+            transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+
+            RollableRoot.rotation = Quaternion.AngleAxis(
+                parab * 10f,
+                Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
+                bufR;
+        }
     });
+
+    protected ActionStage PauseAction(float t) => new ActionStage(t, _ => { });
 
     [SerializeField] protected CinemachineImpulseSource collisionSource;
     protected abstract IEnumerator TakeDamageAnimation(int damage);
@@ -291,14 +316,14 @@ public class Orientation {
     }
 
     public static bool operator ==(Orientation a, Orientation b) =>
-            (Mathf.FloorToInt(a.position_GRD.Item1) == Mathf.FloorToInt(b.position_GRD.Item1)) &&
-            (Mathf.FloorToInt(a.position_GRD.Item2) == Mathf.FloorToInt(b.position_GRD.Item2));
+            (Mathf.RoundToInt(a.position_GRD.Item1) == Mathf.RoundToInt(b.position_GRD.Item1)) &&
+            (Mathf.RoundToInt(a.position_GRD.Item2) == Mathf.RoundToInt(b.position_GRD.Item2));
 
     public static bool operator !=(Orientation a, Orientation b) => !(a == b);
 
     public static implicit operator Orientation(BaseRollable mb) => new Orientation(
-        (Mathf.FloorToInt(mb.transform.position.z),
-        Mathf.FloorToInt(mb.transform.position.x)),
+        (Mathf.RoundToInt(mb.transform.position.z),
+        Mathf.RoundToInt(mb.transform.position.x)),
         mb.RollableRoot.rotation);
 
 }

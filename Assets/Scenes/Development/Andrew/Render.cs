@@ -17,10 +17,12 @@ public class Render : MonoBehaviour
                 {
                     mesh[i].enabled = false;
                     //will not enable render after key is released
+
                 }
                 else
                 {
                     mesh[i].enabled = true;
+
                 }
             }
         }
