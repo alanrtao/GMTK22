@@ -166,12 +166,12 @@ public abstract class BaseRollable : MonoBehaviour
         }
     }
 
-    protected int FindClosestCurrFace(Vector3 dir) {
+    public int FindClosestCurrFace(Vector3 dir) {
         var i = m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First();
         return i.Item1;
     }
 
-    protected int FindClosestIdxFace(Vector3 dir)
+    public int FindClosestIdxFace(Vector3 dir)
     {
         var dist = float.MaxValue;
         int min = -1;
@@ -184,7 +184,8 @@ public abstract class BaseRollable : MonoBehaviour
         return min;
     }
 
-    protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
+    //2 5 4 3 6 1;
+    public int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 
 
 
@@ -264,6 +265,13 @@ public abstract class BaseRollable : MonoBehaviour
                 RollableRoot.rotation = bufR;
                 bufP = Vector3.zero;
                 bufR = Quaternion.identity;
+            }
+            //AfterAttack <--
+            if (this is Player) 
+            { 
+                var player = (Player)this;
+                player.NextAtkDmg = 0;
+                player.NextAtkMultiplier = 1;
             }
             return;
         }

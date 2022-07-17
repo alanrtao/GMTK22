@@ -13,6 +13,7 @@ public class Items : MonoBehaviour
     {
         public string ItemName;
         public Sprite ItemIcon;
+        public string ItemIntro;
         public bool IsActivated;
         public Character CardCharacter;
     }
@@ -55,14 +56,13 @@ public class Items : MonoBehaviour
 
         }
 
-        if (Name == "Charging Blow") 
+        if (Name == "Charge Up") 
         {
             if (CurrentState == ActivateStates.AfterMovement) 
             {
-                //ToBeChanged
-                if (1 == 1) 
+                if (Player.Instance.FindClosestIdxFace(Vector3.up) == Player.OriginalNumberToIndex(1)) 
                 {
-                    Player.Instance.NextAtkMultiplier *=  2;
+                    Player.Instance.NextAtkMultiplier +=  2;
                 }
             }
         }
@@ -78,6 +78,19 @@ public class Items : MonoBehaviour
             {
                 Player.Instance.ChangeHPBy(-2);
             }
+        }
+
+        if (Name == "Double Edge")
+        {
+            if (CurrentState == ActivateStates.Manual)
+            {
+                Player.Instance.NextAtkMultiplier += 1;
+            }
+        }
+
+        if (Name == "Gauntlet") 
+        {
+            
         }
     }
 }

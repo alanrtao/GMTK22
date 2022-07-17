@@ -14,8 +14,8 @@ public abstract class Player : BaseRollable
 
 
     [Header("The Damage Next Attack is going to deal")]
-    public int NextAtkDmg;
-    public int NextAtkMultiplier;
+    public int NextAtkDmg = 0;
+    public int NextAtkMultiplier = 1;
 
     public PlayerItems MyItems;
     public int Wuso
@@ -110,15 +110,26 @@ public abstract class Player : BaseRollable
     public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true, bool addToWuso = true)
     {
         if (MyItems != null)
+        {
             MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
+        }
+
+        Debug.Log(damage);
+        NextAtkDmg += damage; 
+        NextAtkDmg *= NextAtkMultiplier;
+
+        damage = NextAtkDmg;
         if (this is Warrior) 
         {
-            //NextAtkDmg += FindClosestCurrFace(Vector3.up);
+            
+
+
         }
         if (addToWuso) Wuso += damage;
+        Wuso += NextAtkDmg;
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
-        Debug.Log($"Dealing {damage} damage");
-        StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));
+        Debug.Log($"Dealing {NextAtkDmg} damage");
+        StartCoroutine(PlayOneshot(AttackAction(enemy, NextAtkDmg, renderAnimation)));
     }
 
     public IEnumerator PlayOneshot(ActionStage action)
