@@ -8,12 +8,12 @@ public class Warrior : Player
 
     public override void Ultimate()
     {
-        if (wuso >= 24) wuso -= 24;
+        if (Wuso >= 24) Wuso -= 24;
         else return;
 
         blocked = true;
 
-        var wuBuf = wuso;
+        var wuBuf = Wuso;
 
         var pBuf = transform.position;
         var rBuf = m_RollableRoot.localRotation;
@@ -56,7 +56,7 @@ public class Warrior : Player
             }),
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);
-                if (t == 1) wuso = wuBuf;
+                if (t == 1) Wuso = wuBuf;
             })
         };
         StartCoroutine(UltimateAnimation(stages));
