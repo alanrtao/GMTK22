@@ -12,7 +12,6 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
-    [Header("The Damage Next Attack is going to deal")]
     public int NextAtkDmg = 0;
     public int NextAtkMultiplier = 1;
 
@@ -89,6 +88,7 @@ public abstract class Player : BaseRollable
         {
             MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
         }
+        NextAtkDmg *= NextAtkMultiplier;
         if (this is Warrior) 
         {
             

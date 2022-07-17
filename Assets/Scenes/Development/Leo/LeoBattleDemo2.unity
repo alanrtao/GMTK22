@@ -1219,7 +1219,7 @@ MonoBehaviour:
   collisionSource: {fileID: 423508011}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 628585534}
 --- !u!1 &425229605
 GameObject:
@@ -1319,7 +1319,7 @@ MonoBehaviour:
   collisionSource: {fileID: 425229607}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 729998840}
 --- !u!1 &450012074
 GameObject:
@@ -1540,7 +1540,7 @@ MonoBehaviour:
   collisionSource: {fileID: 459105853}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 199894178}
 --- !u!1 &470998166
 GameObject:
@@ -3010,7 +3010,7 @@ MonoBehaviour:
   collisionSource: {fileID: 809794249}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 294125557}
 --- !u!1 &813423707
 GameObject:
@@ -4294,7 +4294,7 @@ MonoBehaviour:
   collisionSource: {fileID: 1434266843}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 2107080790}
 --- !u!1 &1473315271
 GameObject:
@@ -5074,7 +5074,7 @@ MonoBehaviour:
   collisionSource: {fileID: 1744821775}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 525106385}
 --- !u!1 &1768804012
 GameObject:
