@@ -64,12 +64,18 @@ public abstract class Player : BaseRollable
                 Ultimate();
             } else if (Input.GetKeyDown(KeyCode.Return))
             {
-                Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
+                if (MyItems != null) 
+                {
+                    Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
+                }
                 GameManager.Pool.StartEnemyTurns();
             }
         } else
         {
-            Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
+            if (MyItems != null)
+            {
+                Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
+            }
             GameManager.Pool.StartEnemyTurns();
         }
     }
@@ -79,7 +85,8 @@ public abstract class Player : BaseRollable
     [SerializeField] protected BaseAnimation normalAttackVfx, ultimateVfx;
     public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true)
     {
-        MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
+        if (MyItems != null)
+            MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
         if (this is Warrior) 
         {
             //NextAtkDmg += FindClosestCurrFace(Vector3.up);
