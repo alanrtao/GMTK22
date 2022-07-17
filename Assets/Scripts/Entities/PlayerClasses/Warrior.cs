@@ -9,13 +9,15 @@ public class Warrior : Player
     {
         // first shield then -hp
         Debug.Log("Turn end as warrior");
-        shield = FindClosestCurrFace(Vector3.up);
+
+        //Temp Solution
+        shield = FindClosestCurrFace(Vector3.down);
         base.TurnEnd();
     }
 
     public override void Ultimate()
     {
-        if (Wuso >= 24) Wuso -= 24;
+        if (Wuso >= 20) Wuso -= 20;
         else return;
 
         blocked = true;
