@@ -45,7 +45,7 @@ public class BasicEnemy : BaseEnemy
             //} else
             //{
                 Debug.Log($"Enter attack action for { gameObject.name }");
-                stages.Add(AttackAction(Player.Instance, kAttack));
+                stages.Add(AttackAction(Player.Instance, kAttack + wave));
                 ShowAlert(false);
             //}
         } else if (idx > 0)

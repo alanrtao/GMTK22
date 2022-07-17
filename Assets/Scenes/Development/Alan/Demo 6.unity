@@ -1467,6 +1467,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 423508011}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3
@@ -1568,6 +1569,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 425229607}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3
@@ -1790,6 +1792,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 459105853}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3
@@ -2332,8 +2335,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BasicEnemyPrototype: {fileID: 2952246987652159790, guid: d20918f3f459c4f069482139c9a9decb, type: 3}
   RangedEnemyPrototype: {fileID: 0}
-  EnemyCount: 8
-  SpawnPerTurn: 2
+  EnemyCount: 100
+  SpawnPerTurn: 1
   InEnemyTurn: 0
 --- !u!4 &652899385
 Transform:
@@ -3329,6 +3332,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 809794249}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3
@@ -4735,6 +4739,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 1434266843}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3
@@ -5621,6 +5626,7 @@ MonoBehaviour:
   Faces: 
   IsMoving: 0
   collisionSource: {fileID: 1744821775}
+  wave: 0
   done: 0
   kAttack: 4
   kSteps: 3

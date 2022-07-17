@@ -48,6 +48,11 @@ public abstract class Player : BaseRollable
 
     protected override IEnumerator Start()
     {
+        var vignette = profile.GetSetting<Vignette>();
+        var c = vignette.color;
+        c.value = Color.black;
+        var i = vignette.intensity;
+        i.value = 0;
         blocked = true;
         IsMoving = true;
         StartCoroutine(base.Start());

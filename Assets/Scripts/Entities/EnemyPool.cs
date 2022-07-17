@@ -13,7 +13,8 @@ public class EnemyPool : MonoBehaviour
 
     public int EnemyCount = 8;
     public int SpawnPerTurn;
-    private int AlreadySpawned;
+    public int TurnsPerWave = 8;
+    public int AlreadySpawned = 0;
 
     private IEnumerator Start()
     {
@@ -56,8 +57,15 @@ public class EnemyPool : MonoBehaviour
                 //    enemy = Instantiate(BasicEnemyPrototype, transform);
                 //}
                 enemy.transform.position = new Vector3(pick.Item2, 0, pick.Item1);
-                m_EnemyPool.Add(enemy.GetComponent<BaseEnemy>());
-                GameManager.Map.SetObstacle(enemy.GetComponent<BaseEnemy>());
+                var bEnemy = enemy.GetComponent<BaseEnemy>();
+
+                bEnemy.MAX_HP += SpawnPerTurn - 1;
+                bEnemy.wave = SpawnPerTurn - 1;
+                bEnemy.SetHP(bEnemy.MAX_HP);
+
+                m_EnemyPool.Add(bEnemy);
+
+                GameManager.Map.SetObstacle(bEnemy);
                 toSpawn -= 1;
                 Debug.Log($"Spawned {enemy.name}");
             }
@@ -86,6 +94,7 @@ public class EnemyPool : MonoBehaviour
     {
         Debug.Log($"Entering Turn {tCount++}");
         Player.Instance.blocked = true;
+        SpawnPerTurn = tCount / TurnsPerWave + 1;
         InEnemyTurn = true;
         for (var i = 0; i < m_EnemyPool.Count; i++)
         {

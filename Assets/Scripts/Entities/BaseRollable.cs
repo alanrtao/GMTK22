@@ -34,7 +34,7 @@ public abstract class BaseRollable : MonoBehaviour
         }
     }
 
-    [SerializeField] protected int m_HP;
+    protected int m_HP;
 
     public Transform RollableRoot => m_RollableRoot;
     [SerializeField] protected Transform m_RollableRoot;
