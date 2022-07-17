@@ -81,7 +81,7 @@ public class EnemyPool : MonoBehaviour
     {
         if (AlreadySpawned == EnemyCount && m_EnemyPool.Count == 0)
         {
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(3);
         }
     }
 

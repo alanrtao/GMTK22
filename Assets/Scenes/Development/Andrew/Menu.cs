@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
@@ -23,9 +24,10 @@ public class Menu : MonoBehaviour
     }
 
     void LoadScene()
-    {   
+    {
         //change the level here
-        Application.LoadLevel("Demo3"); //<----placeholder level, need to change
+        //Application.LoadLevel(""); //<----placeholder level, need to change
+        SceneManager.LoadScene(1);
     }
 
 }
