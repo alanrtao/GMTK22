@@ -58,10 +58,11 @@ public class Map : MonoBehaviour
     public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
     public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.FloorToInt(sz), Mathf.FloorToInt(sx), Mathf.FloorToInt(z), Mathf.FloorToInt(x));
     public bool Legal((int, int) p, (int, int) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
+
     public bool Legal(int sz, int sx, int z, int x)
         => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
-        (Obstacle(z, x) == null || Obstacle(z, x) == Player.Instance) &&
-        (Grid(z, x) - Grid(sz, sx)) < 1f;
+        (Obstacle(z, x) == null || Obstacle(z, x) == Player.Instance); //&&
+        //(Grid(z, x) - Grid(sz, sx)) < 1.2f;  Height constraint
 
     private void OnDrawGizmosSelected()
     {
@@ -87,7 +88,7 @@ public class Map : MonoBehaviour
                 {
                     float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
                     if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 1;
-                    else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 2;
+                    //else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 8;
                 }
             }
         }

@@ -12,6 +12,10 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
+    [Header("The Damage Next Attack is going to deal")]
+    public int NextAtkDmg;
+    public int NextAtkMultiplier;
+
     void Awake()
     {
         Instance = this;
@@ -66,6 +70,11 @@ public abstract class Player : BaseRollable
 
     public virtual void Attack(int damage, BaseEnemy enemy)
     {
+        if (this is Warrior) 
+        {
+            //NextAtkDmg += FindClosestCurrFace(Vector3.up);
+        }
+        //ToBeChanged
         Debug.Log($"Dealing {damage} damage");
         StartCoroutine(PlayOneshot(AttackAction(enemy, damage)));
     }
