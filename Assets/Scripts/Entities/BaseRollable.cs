@@ -49,6 +49,7 @@ public abstract class BaseRollable : MonoBehaviour
     {
         while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
 
+        Debug.Log($"Initialize faces for {gameObject.name}");
         m_Faces = new (int, Vector3)[Faces0.Length];
         for (int i = 0; i < Faces0.Length; i++)
         {
@@ -245,7 +246,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     private Vector3 bufP;
     private Quaternion bufR;
-    protected ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
+    protected virtual ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
         if (t == 0)
         {
