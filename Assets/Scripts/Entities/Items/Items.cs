@@ -13,6 +13,7 @@ public class Items : MonoBehaviour
     {
         public string ItemName;
         public Sprite ItemIcon;
+        public string ItemIntro;
         public bool IsActivated;
         public Character CardCharacter;
     }
