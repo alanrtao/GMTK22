@@ -20,16 +20,19 @@ public class EnemyPool : MonoBehaviour
         while (!GameManager.Map.done) yield return null;
 
         m_EnemyPool.ForEach(e => GameManager.Map.SetObstacle(e));
+
+        InEnemyTurn = false;
     }
 
     public void StartEnemyTurns() => StartCoroutine(TakeTurns());
 
+    public bool InEnemyTurn = false;
     private int tCount = 0;
     private IEnumerator TakeTurns()
     {
         Debug.Log($"Entering Turn {tCount++}");
         Player.Instance.blocked = true;
-
+        InEnemyTurn = true;
         for (var i = 0; i < m_EnemyPool.Count; i++)
         {
             var e = m_EnemyPool[i];
@@ -39,8 +42,8 @@ public class EnemyPool : MonoBehaviour
             while (!e.done || e.IsMoving)
                 yield return null;
         }
-
         Player.Instance.Turn();
+        InEnemyTurn = false;
         Player.Instance.blocked = false;
     }
 }
