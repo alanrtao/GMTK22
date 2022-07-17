@@ -1124,8 +1124,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BasicEnemyPrototype: {fileID: 2952246987652159790, guid: d20918f3f459c4f069482139c9a9decb, type: 3}
   RangedEnemyPrototype: {fileID: 0}
-  EnemyCount: 8
+  EnemyCount: 100
   SpawnPerTurn: 2
+  TurnsPerWave: 8
+  AlreadySpawned: 0
   InEnemyTurn: 0
 --- !u!4 &652899385
 Transform:
@@ -1885,7 +1887,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 40
-  m_HP: 40
   m_RollableRoot: {fileID: 220681027}
   m_vCam: {fileID: 1130782666}
   Faces: 
