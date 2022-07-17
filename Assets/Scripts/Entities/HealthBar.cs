@@ -26,7 +26,7 @@ public class HealthBar : MonoBehaviour
         if (isCriticalBar && MyMaster is Player)
         {
             Color Glow;
-            Glow = new Color(1, 1, 1, 0) * Mathf.Sin(Time.realtimeSinceStartup * 10) * 0.1f;
+            Glow = new Color(1, 1, 1, 0) * Mathf.Sin(Time.realtimeSinceStartup * 20) * 0.2f;
             if ((MyMaster as Player).Wuso >= 20)
             {
                 Number.text = "Ultimate Rdy!";
@@ -35,8 +35,10 @@ public class HealthBar : MonoBehaviour
             else 
             {
                 Number.text = (MyMaster as Player).Wuso + " / " + 20;
+                MyBar.color = Color.blue;
             }
             MyBar.rectTransform.localScale = new Vector2((float)(MyMaster as Player).Wuso / 20f * InitialScale.x, InitialScale.y);
+
         }
         else 
         {
