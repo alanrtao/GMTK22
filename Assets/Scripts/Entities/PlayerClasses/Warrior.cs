@@ -37,9 +37,9 @@ public class Warrior : Player
 
                     GameManager.Map
                         .Adjacent(transform.position.z, transform.position.x)
-                        .Select(n => (BaseEnemy)GameManager.Map.Obstacle(n))
+                        .Select(n => (BaseEnemy)GameManager.Map.Obstacle(n.Item1, n.Item2))
                         .Where(e => e != null)
-                        .ForEach(e => Attack(upNum, e));
+                        .ForEach(e => Attack(upNum, e, false));
 
                     return;
                 }
@@ -48,11 +48,11 @@ public class Warrior : Player
             }),
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);
+                if (t == 1) wuso = wuBuf;
             })
         };
         StartCoroutine(UltimateAnimation(stages));
 
-        wuso = wuBuf;
     }
 
     public IEnumerator UltimateAnimation(List<ActionStage> stages)

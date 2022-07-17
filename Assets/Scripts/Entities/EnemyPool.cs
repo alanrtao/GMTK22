@@ -30,9 +30,11 @@ public class EnemyPool : MonoBehaviour
         for (var i = 0; i < m_EnemyPool.Count; i++)
         {
             var e = m_EnemyPool[i];
+            e.done = false;
             e.UpdateStages(i);
             StartCoroutine(e.Turn());
-            yield return new WaitForSeconds(e.ActionStagesTime);
+            while (!e.done)
+                yield return null;
         }
 
         Player.Instance.blocked = false;

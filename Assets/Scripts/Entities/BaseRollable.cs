@@ -117,7 +117,10 @@ public abstract class BaseRollable : MonoBehaviour
         Place(end, GameManager.Map.Grid(end.position_GRD));
 
         if (pending.Count == 0)
+        {
             complete(end);
+            yield return new WaitForSeconds(0.1f);
+        }
         else
             StartCoroutine(RLerp(complete));
     }
