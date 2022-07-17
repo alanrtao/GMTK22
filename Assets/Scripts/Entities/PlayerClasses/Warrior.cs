@@ -51,6 +51,7 @@ public class Warrior : Player
                         .Where(e => e != null)
                         .ForEach(e => Attack(upNum, e, false, false));
 
+                    Snd.Play("Attack Heavy 1");
                     collisionSource.GenerateImpulse(1 + Mathf.Log(upNum));
 
                     return;

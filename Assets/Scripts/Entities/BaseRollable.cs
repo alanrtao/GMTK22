@@ -106,7 +106,7 @@ public abstract class BaseRollable : MonoBehaviour
     public static readonly float tMove = 0.25f;
     public bool IsMoving = false;
     protected IEnumerator RLerp(Action<Orientation> complete = null) {
-
+        Snd.Play("Step 1");
         IsMoving = true;
         float t_ = 0;
 
@@ -254,6 +254,7 @@ public abstract class BaseRollable : MonoBehaviour
         IsMoving = true;
         if (t == 0)
         {
+            Snd.Play("Attack 1");
             target.ChangeHPBy(-attack);
             if (renderAnimation)
             {
