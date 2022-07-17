@@ -5,6 +5,13 @@ using System.Linq;
 
 public class Warrior : Player
 {
+    public override void TurnEnd()
+    {
+        // first shield then -hp
+        Debug.Log("Turn end as warrior");
+        shield = FindClosestCurrFace(Vector3.up);
+        base.TurnEnd();
+    }
 
     public override void Ultimate()
     {

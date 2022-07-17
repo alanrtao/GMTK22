@@ -29,7 +29,6 @@ public class EnemyPool : MonoBehaviour
     {
         Debug.Log($"Entering Turn {tCount++}");
         Player.Instance.blocked = true;
-        Player.Instance.Turn();
 
         for (var i = 0; i < m_EnemyPool.Count; i++)
         {
@@ -41,6 +40,7 @@ public class EnemyPool : MonoBehaviour
                 yield return null;
         }
 
+        Player.Instance.Turn();
         Player.Instance.blocked = false;
     }
 }

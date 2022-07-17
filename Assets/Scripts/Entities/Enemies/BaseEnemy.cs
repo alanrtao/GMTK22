@@ -186,4 +186,10 @@ public abstract class BaseEnemy : BaseRollable
         });
     #endregion
 
+    protected override IEnumerator TakeDamageAnimation(int damage)
+    {
+        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
+        yield return new WaitForFixedUpdate();
+    }
+
 }
