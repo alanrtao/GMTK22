@@ -54,7 +54,7 @@ public abstract class Player : BaseRollable
     protected override void Update()
     {
         base.Update();
-        if (blocked || IsMoving) return;
+        if (blocked || IsMoving || GameManager.Pool.InEnemyTurn) return;
         if (stamina > 0)
         {
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -180,7 +180,7 @@ public abstract class Player : BaseRollable
         blocked = true;
         Wuso += damage;
 
-        // collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
+        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
         float t = 0;
 

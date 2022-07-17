@@ -23,7 +23,7 @@ public abstract class BaseRollable : MonoBehaviour
         if (by < 0)
         {
             Debug.Log($"Taking actual damage {by}");
-            StartCoroutine(TakeDamageAnimation(by));
+            StartCoroutine(TakeDamageAnimation(-by));
             m_HP = Mathf.Max(0, m_HP + by);
             if (m_HP == 0) Die();
         }
@@ -248,7 +248,6 @@ public abstract class BaseRollable : MonoBehaviour
     {
         if (t == 0)
         {
-            Debug.Log("Trigger HP change");
             target.ChangeHPBy(-attack);
             if (renderAnimation)
             {
