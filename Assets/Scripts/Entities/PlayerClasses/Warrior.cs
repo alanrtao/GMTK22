@@ -9,8 +9,6 @@ public class Warrior : Player
     {
         // first shield then -hp
         Debug.Log("Turn end as warrior");
-
-        //Temp Solution
         shield = FindClosestCurrFace(Vector3.down);
         base.TurnEnd();
     }
@@ -30,13 +28,13 @@ public class Warrior : Player
 
         List<ActionStage> stages = new List<ActionStage>()
         {
-            new ActionStage(0.25f, (t) =>
+            new ActionStage(0.5f, (t) =>
             {
                 vCam.m_Lens.OrthographicSize = vCamBuf - (1 - (1 - t) * (1 - t)) * 0.2f;
                 transform.position = pBuf + Vector3.up * (1 - (1 - t) * (1 - t));
                 // m_RollableRoot.localRotation = Quaternion.AngleAxis(MathExtensions.EaseInOutCubic(t) * 360, Vector3.up) * rBuf;
             }),
-            new ActionStage(0.25f, (t) =>
+            new ActionStage(0.4f, (t) =>
             {
                 if (t == 1)
                 {
@@ -51,7 +49,7 @@ public class Warrior : Player
                         .Adjacent(transform.position.z, transform.position.x)
                         .Select(n => (BaseEnemy)GameManager.Map.Obstacle(n.Item1, n.Item2))
                         .Where(e => e != null)
-                        .ForEach(e => Attack(upNum, e, false));
+                        .ForEach(e => Attack(upNum, e, false, false));
 
                     collisionSource.GenerateImpulse(1 + Mathf.Log(upNum));
 
@@ -65,7 +63,9 @@ public class Warrior : Player
             }),
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);
-                if (t == 1) Wuso = wuBuf;
+                if (t == 1) {
+                    if (stamina > 0) stamina -= 1;
+                }
             })
         };
         StartCoroutine(UltimateAnimation(stages));

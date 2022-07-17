@@ -5,8 +5,6 @@ using System.Linq;
 
 public class BasicEnemy : BaseEnemy
 {
-    bool right = true;
-
     [SerializeField] int kAttack = 4;
     [SerializeField] int kSteps = 2;
 
@@ -14,8 +12,6 @@ public class BasicEnemy : BaseEnemy
 
     public override void UpdateStages(int i)
     {
-        right = !right;
-
         stages = new List<ActionStage>();
         if (i == 0)
         {
