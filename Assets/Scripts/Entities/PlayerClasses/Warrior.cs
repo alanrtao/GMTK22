@@ -28,13 +28,13 @@ public class Warrior : Player
 
         List<ActionStage> stages = new List<ActionStage>()
         {
-            new ActionStage(0.25f, (t) =>
+            new ActionStage(0.5f, (t) =>
             {
                 vCam.m_Lens.OrthographicSize = vCamBuf - (1 - (1 - t) * (1 - t)) * 0.2f;
                 transform.position = pBuf + Vector3.up * (1 - (1 - t) * (1 - t));
                 // m_RollableRoot.localRotation = Quaternion.AngleAxis(MathExtensions.EaseInOutCubic(t) * 360, Vector3.up) * rBuf;
             }),
-            new ActionStage(0.25f, (t) =>
+            new ActionStage(0.4f, (t) =>
             {
                 if (t == 1)
                 {
@@ -64,11 +64,7 @@ public class Warrior : Player
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);
                 if (t == 1) {
-                    if (stamina > 0)
-                    {
-                        stamina -= 1;
-                    }
-                    Wuso = wuBuf;
+                    if (stamina > 0) stamina -= 1;
                 }
             })
         };

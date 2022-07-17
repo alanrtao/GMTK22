@@ -184,13 +184,14 @@ public abstract class Player : BaseRollable
 
     public void Turn()
     {
+        Debug.Log("Player turn start");
         shield = 0;
         stamina = MAX_STAMINA;
     }
 
     public virtual void TurnEnd()
     {
-        Debug.Log("Turn end");
+        Debug.Log("Player turn end");
         if (MyItems != null)
         {
             Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
