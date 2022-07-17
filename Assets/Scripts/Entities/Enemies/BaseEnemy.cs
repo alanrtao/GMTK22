@@ -90,10 +90,10 @@ public abstract class BaseEnemy : BaseRollable
             var right = (expCurr.Item1 - 1, expCurr.Item2);
 
             var neighbors = new List<int>();
-            if (GameManager.Map.Legal(up.Item1, up.Item2)) neighbors.Add(GameManager.Map.Fold(up));
-            if (GameManager.Map.Legal(down.Item1, down.Item2)) neighbors.Add(GameManager.Map.Fold(down));
-            if (GameManager.Map.Legal(left.Item1, left.Item2)) neighbors.Add(GameManager.Map.Fold(left));
-            if (GameManager.Map.Legal(right.Item1, right.Item2)) neighbors.Add(GameManager.Map.Fold(right));
+            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, up.Item1, up.Item2)) neighbors.Add(GameManager.Map.Fold(up));
+            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, down.Item1, down.Item2)) neighbors.Add(GameManager.Map.Fold(down));
+            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, left.Item1, left.Item2)) neighbors.Add(GameManager.Map.Fold(left));
+            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, right.Item1, right.Item2)) neighbors.Add(GameManager.Map.Fold(right));
 
             foreach(var n in neighbors)
             {

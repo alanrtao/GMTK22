@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
 
-public class Player : BaseRollable
+public abstract class Player : BaseRollable
 {
     public static Player Instance { get; private set; }
 
@@ -17,9 +17,9 @@ public class Player : BaseRollable
         Instance = this;
     }
 
-    protected override void Start()
+    protected override IEnumerator Start()
     {
-        base.Start();
+        yield return base.Start();
         blocked = false;
 
         GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
@@ -60,7 +60,7 @@ public class Player : BaseRollable
         }
     }
 
-    public virtual void Ultimate() => Debug.Log("ult");
+    public abstract void Ultimate();
 
     public virtual void Attack(int damage, BaseEnemy enemy)
     {
@@ -103,7 +103,7 @@ public class Player : BaseRollable
 
         // Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
 
-        if (GameManager.Map.Legal(pred.position_GRD))
+        if (GameManager.Map.Legal(curr.position_GRD, pred.position_GRD))
         {
             base.Move(d);
             stamina = Mathf.Max(0, stamina - 1);
@@ -142,7 +142,7 @@ public class Player : BaseRollable
             vignette.color = c;
 
             var i = vignette.intensity;
-            i.value = 0.2f * (1 - Mathf.Pow(1 - p, 3));
+            i.value = 0.2f * Mathf.Pow(1 - p, 3);
             vignette.intensity = i;
 
             yield return new WaitForEndOfFrame();

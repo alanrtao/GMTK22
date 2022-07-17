@@ -32,20 +32,24 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected (int, Vector3)[] m_Faces;
 
-    protected virtual void Start()
+    protected virtual IEnumerator Start()
     {
+        while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
+
         m_Faces = new (int, Vector3)[Faces0.Length];
         for(int i = 0; i < Faces0.Length; i++)
         {
             m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
         }
+
+        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation) this).position_GRD);
     }
 
-    protected void Place(Orientation o)
+    protected void Place(Orientation o, float altitude)
     {
         transform.position = new Vector3(
             o.position_GRD.Item2,
-            transform.position.y,
+            altitude,
             o.position_GRD.Item1);
         m_RollableRoot.localRotation = o.rotation_LS;
     }
@@ -94,13 +98,17 @@ public abstract class BaseRollable : MonoBehaviour
         while (t_ < tMove) {
             var p = t_ / tMove;
             var o = Orientation.Lerp(start, end, 1 - Mathf.Pow(1-p, 3));
-            Place(o);
+            Place(o, Mathf.Lerp(
+                GameManager.Map.Grid(start.position_GRD),
+                GameManager.Map.Grid(end.position_GRD),
+                p
+                ));
 
             t_ += Time.deltaTime;
             yield return null;
         }
 
-        Place(end);
+        Place(end, GameManager.Map.Grid(end.position_GRD));
 
         if (pending.Count == 0)
             complete(end);
