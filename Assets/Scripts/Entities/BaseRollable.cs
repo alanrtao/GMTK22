@@ -47,6 +47,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected virtual IEnumerator Start()
     {
+        IsMoving = true;
         while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
 
         Debug.Log($"Initialize faces for {gameObject.name}");
@@ -55,8 +56,8 @@ public abstract class BaseRollable : MonoBehaviour
         {
             m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
         }
-
         transform.position += Vector3.up * GameManager.Map.Grid(((Orientation)this).position_GRD) * GameManager.Map.AltModifier;
+        IsMoving = false;
     }
 
     protected virtual void Update()
@@ -248,6 +249,7 @@ public abstract class BaseRollable : MonoBehaviour
     private Quaternion bufR;
     protected virtual ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
+        IsMoving = true;
         if (t == 0)
         {
             target.ChangeHPBy(-attack);
@@ -273,6 +275,7 @@ public abstract class BaseRollable : MonoBehaviour
                 player.NextAtkDmg = 0;
                 player.NextAtkMultiplier = 1;
             }
+            IsMoving = false;
             return;
         }
 
