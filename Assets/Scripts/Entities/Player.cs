@@ -26,7 +26,7 @@ public abstract class Player : BaseRollable
 
         wuso = 0;
 
-        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
+        GameManager.Map.SetObstacle(this);
         Turn();
 
         blocked = false;
@@ -37,7 +37,7 @@ public abstract class Player : BaseRollable
     protected override void Update()
     {
         base.Update();
-        if (blocked) return;
+        if (blocked || IsMoving) return;
         if (stamina > 0)
         {
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -80,6 +80,7 @@ public abstract class Player : BaseRollable
 
     public IEnumerator PlayOneshot(ActionStage action)
     {
+        blocked = true;
         float t = 0;
         action.Do(0);
         yield return new WaitForEndOfFrame();
@@ -91,10 +92,12 @@ public abstract class Player : BaseRollable
             yield return new WaitForEndOfFrame();
         }
         action.Do(1);
+        blocked = false;
     }
 
     public override void Move(Direction d)
     {
+        blocked = true;
         Orientation curr = this;
         Orientation pred = d * curr;
 
@@ -121,6 +124,7 @@ public abstract class Player : BaseRollable
         {
             Debug.Log("invalid move");
         }
+        blocked = false;
     }
 
     public void Turn()
@@ -130,6 +134,7 @@ public abstract class Player : BaseRollable
 
     protected override void Die()
     {
+        blocked = true;
         SceneManager.LoadScene(0);
     }
 
@@ -137,6 +142,7 @@ public abstract class Player : BaseRollable
     const float tDamage = 0.5f;
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
+        blocked = true;
         wuso += damage;
 
         collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
@@ -159,5 +165,6 @@ public abstract class Player : BaseRollable
 
             yield return new WaitForEndOfFrame();
         }
+        blocked = false;
     }
 }

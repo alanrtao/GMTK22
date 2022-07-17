@@ -70,12 +70,12 @@ public abstract class BaseRollable : MonoBehaviour
         pending = ds;
 
         IsMoving = true;
-        var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+        var p0 = (Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x));
         GameManager.Map.SetObstacle(p0.Item1, p0.Item2, null);
 
         void terminate(Orientation end)
         {
-            var p0 = (Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x));
+            var p0 = (Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x));
             GameManager.Map.SetObstacle(p0.Item1, p0.Item2, this);
             IsMoving = false;
             UpdateFaces(end);
@@ -294,14 +294,14 @@ public class Orientation {
     }
 
     public static bool operator ==(Orientation a, Orientation b) =>
-            (Mathf.FloorToInt(a.position_GRD.Item1) == Mathf.FloorToInt(b.position_GRD.Item1)) &&
-            (Mathf.FloorToInt(a.position_GRD.Item2) == Mathf.FloorToInt(b.position_GRD.Item2));
+            (Mathf.RoundToInt(a.position_GRD.Item1) == Mathf.RoundToInt(b.position_GRD.Item1)) &&
+            (Mathf.RoundToInt(a.position_GRD.Item2) == Mathf.RoundToInt(b.position_GRD.Item2));
 
     public static bool operator !=(Orientation a, Orientation b) => !(a == b);
 
     public static implicit operator Orientation(BaseRollable mb) => new Orientation(
-        (Mathf.FloorToInt(mb.transform.position.z),
-        Mathf.FloorToInt(mb.transform.position.x)),
+        (Mathf.RoundToInt(mb.transform.position.z),
+        Mathf.RoundToInt(mb.transform.position.x)),
         mb.RollableRoot.rotation);
 
 }

@@ -25,10 +25,10 @@ public class BasicEnemy : BaseEnemy
             stages.Add(ShiftCamera(GameManager.Pool.Pool[i - 1], this));
         }
 
-        var ex = Mathf.FloorToInt(Player.Instance.transform.position.x);
-        var ez = Mathf.FloorToInt(Player.Instance.transform.position.z);
-        var sx = Mathf.FloorToInt(transform.position.x);
-        var sz = Mathf.FloorToInt(transform.position.z);
+        var ex = Mathf.RoundToInt(Player.Instance.transform.position.x);
+        var ez = Mathf.RoundToInt(Player.Instance.transform.position.z);
+        var sx = Mathf.RoundToInt(transform.position.x);
+        var sz = Mathf.RoundToInt(transform.position.z);
         var moves = AStar(sz, sx, ez, ex);
 
         moves.Item1 = moves.Item1.Take(kSteps + 1).ToList();

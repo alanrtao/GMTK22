@@ -13,7 +13,7 @@ public abstract class BaseEnemy : BaseRollable
 
     protected override void Die() {
         GameManager.Pool.Pool.Remove(this);
-        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), null);
+        GameManager.Map.SetObstacle(Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x), null);
         gameObject.SetActive(false);
     }
 

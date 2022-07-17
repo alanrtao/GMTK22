@@ -36,9 +36,9 @@ public class Map : MonoBehaviour
         return z * WIDTH + x;
     }
 
-    public int Weight(int c1, int c2) => Mathf.FloorToInt(Mathf.Abs(Grid(c1) - Grid(c2)));
+    public int Weight(int c1, int c2) => Mathf.RoundToInt(Mathf.Abs(Grid(c1) - Grid(c2)));
 
-    public int Fold((float, float) p) => Fold(Mathf.FloorToInt(p.Item1), Mathf.FloorToInt(p.Item2));
+    public int Fold((float, float) p) => Fold(Mathf.RoundToInt(p.Item1), Mathf.RoundToInt(p.Item2));
     public int Fold((int, int) p) => Fold(p.Item1, p.Item2);
 
     /// <returns>z, x</returns>
@@ -46,7 +46,7 @@ public class Map : MonoBehaviour
 
     public float Grid((float, float) p) => Grid(p.Item1, p.Item2);
     public float Grid(float z, float x) => Grid(
-        Mathf.FloorToInt(z), Mathf.FloorToInt(x)
+        Mathf.RoundToInt(z), Mathf.RoundToInt(x)
         );
     public float Grid(int z, int x) {
         return m_Grid[Fold(z, x)];
@@ -57,8 +57,8 @@ public class Map : MonoBehaviour
     {
         var p = ((Orientation)o).position_GRD;
         SetObstacle(
-            Mathf.FloorToInt(p.Item1),
-            Mathf.FloorToInt(p.Item2),
+            Mathf.RoundToInt(p.Item1),
+            Mathf.RoundToInt(p.Item2),
             o
             );
     }
@@ -67,7 +67,7 @@ public class Map : MonoBehaviour
     public BaseRollable Obstacle(int z, int x) => m_Grid_Obstacles[Fold(z, x)];
 
     public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
-    public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.FloorToInt(sz), Mathf.FloorToInt(sx), Mathf.FloorToInt(z), Mathf.FloorToInt(x));
+    public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.RoundToInt(sz), Mathf.RoundToInt(sx), Mathf.RoundToInt(z), Mathf.RoundToInt(x));
     public bool Legal((int, int) p, (int, int) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
     public bool Legal(int sz, int sx, int z, int x)
         => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
@@ -125,10 +125,10 @@ public class Map : MonoBehaviour
     {
         var raw = new List<(int, int)>
         {
-            (Mathf.FloorToInt(z-1),Mathf.FloorToInt(x)),
-            (Mathf.FloorToInt(z+1),Mathf.FloorToInt(x)),
-            (Mathf.FloorToInt(z),Mathf.FloorToInt(x+1)),
-            (Mathf.FloorToInt(z),Mathf.FloorToInt(x+1)),
+            (Mathf.RoundToInt(z-1),Mathf.RoundToInt(x)),
+            (Mathf.RoundToInt(z+1),Mathf.RoundToInt(x)),
+            (Mathf.RoundToInt(z),Mathf.RoundToInt(x+1)),
+            (Mathf.RoundToInt(z),Mathf.RoundToInt(x+1)),
         }.Where(p => p.Item1 >= 0 && p.Item1 < WIDTH && p.Item2 >= 0 && p.Item2 < HEIGHT);
 
         Debug.Log(string.Join(", ", raw));
