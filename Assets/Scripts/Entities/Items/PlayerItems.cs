@@ -14,10 +14,10 @@ public class PlayerItems : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            PickUpItem(1);
-        }
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    PickUpItem(1);
+        //}
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) 
         {
