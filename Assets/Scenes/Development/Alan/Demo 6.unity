@@ -1461,7 +1461,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 2093907680}
   m_vCam: {fileID: 1149956569}
   Faces: 
@@ -1563,7 +1562,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 1473315272}
   m_vCam: {fileID: 717072673}
   Faces: 
@@ -1786,7 +1784,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 13152197}
   m_vCam: {fileID: 1629205230}
   Faces: 
@@ -2337,6 +2334,8 @@ MonoBehaviour:
   RangedEnemyPrototype: {fileID: 0}
   EnemyCount: 100
   SpawnPerTurn: 1
+  TurnsPerWave: 1
+  AlreadySpawned: 0
   InEnemyTurn: 0
 --- !u!4 &652899385
 Transform:
@@ -3326,7 +3325,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 2132623487}
   m_vCam: {fileID: 783486954}
   Faces: 
@@ -4227,7 +4225,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 40
-  m_HP: 40
   m_RollableRoot: {fileID: 220681027}
   m_vCam: {fileID: 1130782666}
   Faces: 
@@ -4733,7 +4730,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 128059892}
   m_vCam: {fileID: 813423711}
   Faces: 
@@ -5620,7 +5616,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: 0
   MAX_HP: 10
-  m_HP: 10
   m_RollableRoot: {fileID: 1555053240}
   m_vCam: {fileID: 784547380}
   Faces: 

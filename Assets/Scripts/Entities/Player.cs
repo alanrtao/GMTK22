@@ -35,6 +35,7 @@ public abstract class Player : BaseRollable
     void Awake()
     {
         Instance = this;
+        m_HP = MAX_HP;
     }
 
     public void GoToNextScene()
