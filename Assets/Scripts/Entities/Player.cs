@@ -103,7 +103,7 @@ public class Player : BaseRollable
 
         // Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
 
-        if (GameManager.Map.Legal(pred.position_GRD))
+        if (GameManager.Map.Legal(curr.position_GRD, pred.position_GRD))
         {
             base.Move(d);
             stamina = Mathf.Max(0, stamina - 1);

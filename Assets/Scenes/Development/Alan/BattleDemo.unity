@@ -176,6 +176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WIDTH: 20
   HEIGHT: 20
+  floorTilePrototype: {fileID: 1289464710581885686, guid: 6fa9a8b80b57a4117a0806b9be6e016c, type: 3}
+  floorTiles: []
 --- !u!1001 &261846046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -186,6 +188,10 @@ PrefabInstance:
     - target: {fileID: 4647057849128023938, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
       propertyPath: m_Name
       value: Cube (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4647057849128023938, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4647057849128023939, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
       propertyPath: m_RootOrder
@@ -301,7 +307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &528443640
 MeshCollider:
   m_ObjectHideFlags: 0
