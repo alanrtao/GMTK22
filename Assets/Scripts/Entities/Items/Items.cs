@@ -76,7 +76,7 @@ public class Items : MonoBehaviour
             }
             if (CurrentState == ActivateStates.EndTurn) 
             {
-                Player.Instance.HP -= 2;
+                Player.Instance.ChangeHPBy(-2);
             }
         }
     }
