@@ -10,14 +10,24 @@ public class Map : MonoBehaviour
     private float[] m_Grid;
     private BaseRollable[] m_Grid_Obstacles;
 
+
+    public bool done = false;
+
+    private void Awake()
+    {
+        done = false;
+    }
+
     private void Start()
     {
+        done = false;
         m_Grid = new float[Count];
         m_Grid_Obstacles = new BaseRollable[Count];
 
         Height();
 
         Render();
+        done = true;
     }
 
     public int Fold(int z, int x)
@@ -37,20 +47,13 @@ public class Map : MonoBehaviour
     public float Grid(float z, float x) => Grid(
         Mathf.FloorToInt(z), Mathf.FloorToInt(x)
         );
-    public float Grid(int z, int x) => m_Grid[Fold(z, x)];
+    public float Grid(int z, int x) {
+        return m_Grid[Fold(z, x)];
+            }
     public float Grid(int c) => m_Grid[c];
 
     public void SetObstacle(int z, int x, BaseRollable o) => m_Grid_Obstacles[Fold(z, x)] = o;
     public BaseRollable Obstacle(int z, int x) => m_Grid_Obstacles[Fold(z, x)];
-
-    public void Flush()
-    {
-        for (int i = 0; i < Count; i++)
-        {
-            if (m_Grid[i] != int.MaxValue)
-                m_Grid[i] = 0;
-        }
-    }
 
     public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
     public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.FloorToInt(sz), Mathf.FloorToInt(sx), Mathf.FloorToInt(z), Mathf.FloorToInt(x));
@@ -83,7 +86,7 @@ public class Map : MonoBehaviour
                 for (int j = 0; j < HEIGHT; j++)
                 {
                     float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
-                    if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 0.5f;
+                    if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 1;
                     else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 4;
                 }
             }
@@ -99,7 +102,6 @@ public class Map : MonoBehaviour
             for(int j  =0; j < HEIGHT; j++) {
                 var ftp = Instantiate(floorTilePrototype, transform);
                 var altitude = Grid(i, j);
-                Debug.Log(altitude);
                 ftp.transform.position = new Vector3(j, altitude * kAltitude, i);
                 // ftp.transform.localScale = new Vector3(1, altitude * kAltitude, 1);
                 ftp.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = floorTiles[Mathf.FloorToInt(altitude)];

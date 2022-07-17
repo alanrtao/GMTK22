@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
 
-public class Player : BaseRollable
+public abstract class Player : BaseRollable
 {
     public static Player Instance { get; private set; }
 
@@ -17,9 +17,9 @@ public class Player : BaseRollable
         Instance = this;
     }
 
-    protected override void Start()
+    protected override IEnumerator Start()
     {
-        base.Start();
+        yield return base.Start();
         blocked = false;
 
         GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
@@ -60,7 +60,7 @@ public class Player : BaseRollable
         }
     }
 
-    public virtual void Ultimate() => Debug.Log("ult");
+    public abstract void Ultimate();
 
     public virtual void Attack(int damage, BaseEnemy enemy)
     {

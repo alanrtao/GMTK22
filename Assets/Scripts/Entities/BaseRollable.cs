@@ -32,8 +32,10 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected (int, Vector3)[] m_Faces;
 
-    protected virtual void Start()
+    protected virtual IEnumerator Start()
     {
+        while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
+
         m_Faces = new (int, Vector3)[Faces0.Length];
         for(int i = 0; i < Faces0.Length; i++)
         {
