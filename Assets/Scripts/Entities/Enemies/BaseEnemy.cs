@@ -13,12 +13,14 @@ public abstract class BaseEnemy : BaseRollable
 
     protected override void Die() {
         GameManager.Pool.Pool.Remove(this);
-        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), null);
+        GameManager.Map.SetObstacle(Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x), null);
         gameObject.SetActive(false);
     }
 
+    public bool done;
     public IEnumerator Turn()
     {
+        done = false;
         var tSum = 0f;
         var ts = new float[stages.Count()];
         for(int i = 0; i < stages.Count(); i++)
@@ -46,6 +48,7 @@ public abstract class BaseEnemy : BaseRollable
             stages[i].Do(1);
             yield return new WaitForFixedUpdate();
         }
+        done = true;
     }
 
     protected virtual float Heuristic(int ez, int ex, int z, int x) => Mathf.Sqrt((ez - z) * (ez - z) + (ex - x) * (ex - x));
@@ -56,24 +59,27 @@ public abstract class BaseEnemy : BaseRollable
         var start = GameManager.Map.Fold(sz, sx);
         var goal = GameManager.Map.Fold(ez, ex);
 
-        var open = new List<int> { start };
+        var open = new List<(int, int)> { start };
 
-        var cameFrom = new int[GameManager.Map.Count];
-        var g = new float[GameManager.Map.Count];
-        var f = new float[GameManager.Map.Count];
+        var cameFrom = new (int, int)[GameManager.Map.WIDTH, GameManager.Map.HEIGHT];
+        var g = new float[GameManager.Map.WIDTH, GameManager.Map.HEIGHT];
+        var f = new float[GameManager.Map.WIDTH, GameManager.Map.HEIGHT];
 
-        for (int i = 0; i < cameFrom.Length; i++) {
-            cameFrom[i] = -1;
-            g[i] = int.MaxValue;
-            f[i] = int.MaxValue;
+        for (int i = 0; i < cameFrom.GetLength(0); i++) {
+            for (int j = 0; j < cameFrom.GetLength(1); j++)
+            {
+                cameFrom[i, j] = (-1, -1);
+                g[i, j] = int.MaxValue;
+                f[i, j] = int.MaxValue;
+            }
         }
 
-        g[start] = 0;
-        f[start] = Heuristic(ez, ex, sz, sx);
+        g[sz, sx] = 0;
+        f[sz, sx] = Heuristic(ez, ex, sz, sx);
 
         while(open.Count > 0)
         {
-            var curr = open.OrderBy(i => f[i]).First();
+            var curr = open.OrderBy(i => f[i.Item1, i.Item2]).First();
             // Debug.Log(GameManager.Map.Expand(curr));
             if (curr == goal)
             {
@@ -83,28 +89,26 @@ public abstract class BaseEnemy : BaseRollable
 
             open.Remove(curr);
 
-            var expCurr = GameManager.Map.Expand(curr);
-            var up = (expCurr.Item1, expCurr.Item2 + 1);
-            var down = (expCurr.Item1, expCurr.Item2 - 1);
-            var left = (expCurr.Item1 + 1, expCurr.Item2);
-            var right = (expCurr.Item1 - 1, expCurr.Item2);
+            var up = (curr.Item1, curr.Item2 + 1);
+            var down = (curr.Item1, curr.Item2 - 1);
+            var left = (curr.Item1 + 1, curr.Item2);
+            var right = (curr.Item1 - 1, curr.Item2);
 
-            var neighbors = new List<int>();
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, up.Item1, up.Item2)) neighbors.Add(GameManager.Map.Fold(up));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, down.Item1, down.Item2)) neighbors.Add(GameManager.Map.Fold(down));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, left.Item1, left.Item2)) neighbors.Add(GameManager.Map.Fold(left));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, right.Item1, right.Item2)) neighbors.Add(GameManager.Map.Fold(right));
+            var neighbors = new List<(int, int)>();
+            if (GameManager.Map.Legal<BaseEnemy>(up.Item1, up.Item2)) neighbors.Add(up);
+            if (GameManager.Map.Legal<BaseEnemy>(down.Item1, down.Item2)) neighbors.Add(down);
+            if (GameManager.Map.Legal<BaseEnemy>(left.Item1, left.Item2)) neighbors.Add(left);
+            if (GameManager.Map.Legal<BaseEnemy>(right.Item1, right.Item2)) neighbors.Add(right);
 
             foreach(var n in neighbors)
             {
-                var gTentative = g[curr] + GameManager.Map.Weight(curr, n);
+                var gTentative = g[curr.Item1, curr.Item2] + GameManager.Map.Weight(curr.Item1, curr.Item2, n.Item1, n.Item2);
                 // Debug.Log($"... neighbor {GameManager.Map.Expand(n)} has g { g[n] } vs. { gTentative }");
-                if (gTentative < g[n])
+                if (gTentative < g[n.Item1, n.Item2])
                 {
-                    cameFrom[n] = curr;
-                    g[n] = gTentative;
-                    var nExp = GameManager.Map.Expand(n);
-                    f[n] = gTentative + Heuristic(ez, ex, nExp.Item1, nExp.Item2);
+                    cameFrom[n.Item1, n.Item2] = curr;
+                    g[n.Item1, n.Item2] = gTentative;
+                    f[n.Item1, n.Item2] = gTentative + Heuristic(ez, ex, n.Item1, n.Item2);
 
                     if (!open.Contains(n)) open.Add(n);
                 }
@@ -114,13 +118,13 @@ public abstract class BaseEnemy : BaseRollable
         return (new List<(int, int)>(), new List<Direction>());
     }
 
-    private (List<(int, int)>, List<Direction>) Reconstruct(int[] cameFrom, int curr)
+    private (List<(int, int)>, List<Direction>) Reconstruct((int, int)[,] cameFrom, (int, int) curr)
     {
-        var total = new List<(int, int)> { GameManager.Map.Expand(curr) };
-        while (cameFrom[curr] != -1)
+        var total = new List<(int, int)> { curr };
+        while (cameFrom[curr.Item1, curr.Item2].Item1 != -1)
         {
-            curr = cameFrom[curr];
-            total.Add(GameManager.Map.Expand(curr));
+            curr = cameFrom[curr.Item1, curr.Item2];
+            total.Add((curr.Item1, curr.Item2));
         }
 
         var ds = new List<Direction>();

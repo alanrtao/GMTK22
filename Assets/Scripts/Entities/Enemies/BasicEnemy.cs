@@ -25,10 +25,10 @@ public class BasicEnemy : BaseEnemy
             stages.Add(ShiftCamera(GameManager.Pool.Pool[i - 1], this));
         }
 
-        var ex = Mathf.FloorToInt(Player.Instance.transform.position.x);
-        var ez = Mathf.FloorToInt(Player.Instance.transform.position.z);
-        var sx = Mathf.FloorToInt(transform.position.x);
-        var sz = Mathf.FloorToInt(transform.position.z);
+        var ex = Mathf.RoundToInt(Player.Instance.transform.position.x);
+        var ez = Mathf.RoundToInt(Player.Instance.transform.position.z);
+        var sx = Mathf.RoundToInt(transform.position.x);
+        var sz = Mathf.RoundToInt(transform.position.z);
         var moves = AStar(sz, sx, ez, ex);
 
         moves.Item1 = moves.Item1.Take(kSteps + 1).ToList();
@@ -52,7 +52,7 @@ public class BasicEnemy : BaseEnemy
         } else if (idx > 0)
         {
             // walk up to the player
-            stages.Add(MovesAction(moves.Item2.Take(idx).ToList()));
+            stages.Add(MovesAction(moves.Item2.Take(Mathf.Min(idx, kSteps)).ToList()));
             alertBuffer = true;
             ShowAlert(true);
             // stages.Add(AttackAction(Player.Instance, kAttack));

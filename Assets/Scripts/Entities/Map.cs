@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Map : MonoBehaviour
 {
     public int WIDTH, HEIGHT;
     public int Count => WIDTH * HEIGHT;
 
-    private float[] m_Grid;
-    private BaseRollable[] m_Grid_Obstacles;
+    private float[,] m_Grid;
+    private BaseRollable[,] m_Grid_Obstacles;
 
 
     public bool done = false;
@@ -21,8 +22,8 @@ public class Map : MonoBehaviour
     private void Start()
     {
         done = false;
-        m_Grid = new float[Count];
-        m_Grid_Obstacles = new BaseRollable[Count];
+        m_Grid = new float[WIDTH, HEIGHT];
+        m_Grid_Obstacles = new BaseRollable[WIDTH, HEIGHT];
 
         Height();
 
@@ -30,38 +31,58 @@ public class Map : MonoBehaviour
         done = true;
     }
 
-    public int Fold(int z, int x)
-    {
-        return z * WIDTH + x;
-    }
+    public int Weight(int sz, int sx, int ez, int ex) => Mathf.RoundToInt(Mathf.Abs(Grid(sz, sx) - Grid(ez, ex)));
 
-    public int Weight(int c1, int c2) => Mathf.FloorToInt(Mathf.Abs(Grid(c1) - Grid(c2)));
-
-    public int Fold((float, float) p) => Fold(Mathf.FloorToInt(p.Item1), Mathf.FloorToInt(p.Item2));
-    public int Fold((int, int) p) => Fold(p.Item1, p.Item2);
+    public (int, int) Fold(float z, float x) => (Mathf.RoundToInt(z), Mathf.RoundToInt(x));
+    public (int, int) Fold((float, float) p) => (Mathf.RoundToInt(p.Item1), Mathf.RoundToInt(p.Item2));
 
     /// <returns>z, x</returns>
     public (int, int) Expand(int f) => (f / WIDTH, f % WIDTH);
 
     public float Grid((float, float) p) => Grid(p.Item1, p.Item2);
     public float Grid(float z, float x) => Grid(
-        Mathf.FloorToInt(z), Mathf.FloorToInt(x)
+        Mathf.RoundToInt(z), Mathf.RoundToInt(x)
         );
-    public float Grid(int z, int x) {
-        return m_Grid[Fold(z, x)];
-            }
-    public float Grid(int c) => m_Grid[c];
 
-    public void SetObstacle(int z, int x, BaseRollable o) => m_Grid_Obstacles[Fold(z, x)] = o;
-    public BaseRollable Obstacle(int z, int x) => m_Grid_Obstacles[Fold(z, x)];
+    public float Grid(int z, int x) => m_Grid[z, x];
 
-    public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
-    public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.FloorToInt(sz), Mathf.FloorToInt(sx), Mathf.FloorToInt(z), Mathf.FloorToInt(x));
-    public bool Legal((int, int) p, (int, int) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
-    public bool Legal(int sz, int sx, int z, int x)
-        => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
-        (Obstacle(z, x) == null || Obstacle(z, x) == Player.Instance) &&
-        (Grid(z, x) - Grid(sz, sx)) < 1f;
+    public void SetObstacle(BaseRollable o)
+    {
+        var p = ((Orientation)o).position_GRD;
+        SetObstacle(
+            Mathf.RoundToInt(p.Item1),
+            Mathf.RoundToInt(p.Item2),
+            o
+            );
+    }
+    public void SetObstacle(int z, int x, BaseRollable o) {
+        if (o != null && Obstacle(z, x) != null)
+        {
+            throw new UnityException($"{o.gameObject.name} clashing with {Obstacle(z, x).gameObject.name}");
+        }
+        m_Grid_Obstacles[z, x] = o;
+    }
+    public BaseRollable Obstacle(int z, int x) => m_Grid_Obstacles[z, x];
+
+    //public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
+    //public bool Legal(float sz, float sx, float z, float x) => Legal(Mathf.RoundToInt(sz), Mathf.RoundToInt(sx), Mathf.RoundToInt(z), Mathf.RoundToInt(x));
+    //public bool Legal((int, int) p, (int, int) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
+    //public bool Legal(int sz, int sx, int z, int x)
+    //    => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
+    //    Obstacle(z, x) == null; // || Obstacle(z, x) == Player.Instance); // &&
+    //    // (Grid(z, x) - Grid(sz, sx)) < 1f;
+
+    public bool Legal<T> (int z, int x) where T:BaseRollable
+    {
+        if (z < 0 || z >= WIDTH || x < 0 || x >= HEIGHT) return false;
+
+        var o = Obstacle(z, x);
+        if (o != null)
+        {
+            if (o is T) return false;
+        }
+        return true;
+    }
 
     private void OnDrawGizmosSelected()
     {
@@ -69,7 +90,7 @@ public class Map : MonoBehaviour
         for(int i = 0; i < WIDTH; i++) {
             for(int j = 0; j < HEIGHT; j++) {
                 Gizmos.color = Obstacle(i, j) ? Color.red : Color.green;
-                Gizmos.DrawCube(new Vector3(j, 0.5f, i), Vector3.one * 0.5f);
+                Gizmos.DrawCube(new Vector3(j, 0.5f, i), Vector3.one * 0.2f);
             }
         }
     }
@@ -86,8 +107,8 @@ public class Map : MonoBehaviour
                 for (int j = 0; j < HEIGHT; j++)
                 {
                     float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
-                    if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 1;
-                    else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 2;
+                    if (h > kElevateThreshold) m_Grid[i, j] += 1;
+                    else if (l == kHeightLoop - 1) m_Grid[i, j] += h / 2;
                 }
             }
         }
@@ -108,5 +129,20 @@ public class Map : MonoBehaviour
                 ftp.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = floorTiles[Mathf.FloorToInt(altitude)];
             }
         }
+    }
+
+    public IEnumerable<(int, int)> Adjacent(float z, float x)
+    {
+        var raw = new List<(int, int)>
+        {
+            Fold(z-1, x),
+            Fold(z+1, x),
+            Fold(z, x-1),
+            Fold(z, x+1),
+        }.Where(p => p.Item1 >= 0 && p.Item1 < WIDTH && p.Item2 >= 0 && p.Item2 < HEIGHT);
+
+        Debug.Log(string.Join(", ", raw));
+
+        return raw;
     }
 }

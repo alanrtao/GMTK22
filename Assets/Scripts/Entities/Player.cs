@@ -12,6 +12,8 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
+    public int wuso = 0;
+
     void Awake()
     {
         Instance = this;
@@ -22,7 +24,9 @@ public abstract class Player : BaseRollable
         blocked = true;
         yield return base.Start();
 
-        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
+        wuso = 0;
+
+        GameManager.Map.SetObstacle(this);
         Turn();
 
         blocked = false;
@@ -30,9 +34,10 @@ public abstract class Player : BaseRollable
 
     public bool blocked;
 
-    void Update()
+    protected override void Update()
     {
-        if (blocked) return;
+        base.Update();
+        if (blocked || IsMoving) return;
         if (stamina > 0)
         {
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -64,14 +69,18 @@ public abstract class Player : BaseRollable
 
     public abstract void Ultimate();
 
-    public virtual void Attack(int damage, BaseEnemy enemy)
+    [SerializeField] protected BaseAnimation normalAttackVfx, ultimateVfx;
+    public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true)
     {
+        wuso += damage;
+        if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {damage} damage");
-        StartCoroutine(PlayOneshot(AttackAction(enemy, damage)));
+        StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));
     }
 
     public IEnumerator PlayOneshot(ActionStage action)
     {
+        blocked = true;
         float t = 0;
         action.Do(0);
         yield return new WaitForEndOfFrame();
@@ -83,10 +92,13 @@ public abstract class Player : BaseRollable
             yield return new WaitForEndOfFrame();
         }
         action.Do(1);
+        yield return new WaitForEndOfFrame();
+        blocked = false;
     }
 
     public override void Move(Direction d)
     {
+        blocked = true;
         Orientation curr = this;
         Orientation pred = d * curr;
 
@@ -105,7 +117,7 @@ public abstract class Player : BaseRollable
 
         // Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
 
-        if (GameManager.Map.Legal(curr.position_GRD, pred.position_GRD))
+        if (GameManager.Map.Legal<Player>(Mathf.RoundToInt(pred.position_GRD.Item1), Mathf.RoundToInt(pred.position_GRD.Item2)))
         {
             base.Move(d);
             stamina = Mathf.Max(0, stamina - 1);
@@ -113,6 +125,7 @@ public abstract class Player : BaseRollable
         {
             Debug.Log("invalid move");
         }
+        blocked = false;
     }
 
     public void Turn()
@@ -122,6 +135,7 @@ public abstract class Player : BaseRollable
 
     protected override void Die()
     {
+        blocked = true;
         SceneManager.LoadScene(0);
     }
 
@@ -129,6 +143,9 @@ public abstract class Player : BaseRollable
     const float tDamage = 0.5f;
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
+        blocked = true;
+        wuso += damage;
+
         collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
         float t = 0;
@@ -149,5 +166,6 @@ public abstract class Player : BaseRollable
 
             yield return new WaitForEndOfFrame();
         }
+        blocked = false;
     }
 }
