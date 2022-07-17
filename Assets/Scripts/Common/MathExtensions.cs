@@ -24,4 +24,9 @@ public static class MathExtensions
     public static Vector2 Mult(this Vector2 u, Vector2 v) => new Vector2(u.x * v.x, u.y * v.y);
     public static Vector2 Div(this Vector2 u, Vector2 v) => new Vector2(u.x / v.x, u.y / v.y);
     public static float Max(this Vector2 u) => Mathf.Max(u.x, u.y);
+
+    // https://easings.net/#easeInOutCubic
+    public static float EaseInOutCubic(float x) {
+        return x < 0.5f ? 4 * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 3) / 2f;
+    }
 }
