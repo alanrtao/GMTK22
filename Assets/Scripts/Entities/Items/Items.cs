@@ -55,12 +55,11 @@ public class Items : MonoBehaviour
 
         }
 
-        if (Name == "Charging Blow") 
+        if (Name == "Charge Up") 
         {
             if (CurrentState == ActivateStates.AfterMovement) 
             {
-                //ToBeChanged
-                if (1 == 1) 
+                if (Player.Instance.FindClosestIdxFace(Vector3.up) == Player.OriginalNumberToIndex(1)) 
                 {
                     Player.Instance.NextAtkMultiplier *=  2;
                 }
