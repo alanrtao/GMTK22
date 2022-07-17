@@ -11,8 +11,9 @@ public class HealthBar : MonoBehaviour
     public bool FollowMaster;
     public Vector3 InitialScale;
     public Image MyBar;
-
     public Text Number;
+
+    public Text BlinkTimer;
 
     void Start()
     {
@@ -27,7 +28,8 @@ public class HealthBar : MonoBehaviour
             
             if ((MyMaster as Player).Wuso >= 20)
             {
-                Number.text = "MeteorQuake <Space>";
+                Number.text = "Ultimate Rdy!";
+                MyBar.color = Color.red;
             }
             else 
             {
