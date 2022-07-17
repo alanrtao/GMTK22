@@ -18,6 +18,7 @@ public abstract class Player : BaseRollable
     public int NextAtkMultiplier = 1;
 
     public PlayerItems MyItems;
+    public int ViewWuso;
     public int Wuso
     {
         get => m_Wuso;
@@ -48,7 +49,10 @@ public abstract class Player : BaseRollable
     protected override IEnumerator Start()
     {
         blocked = true;
-        yield return base.Start();
+        IsMoving = true;
+        StartCoroutine(base.Start());
+        while (IsMoving) yield return null;
+
         StartCoroutine(Start_());
     }
 
@@ -57,10 +61,7 @@ public abstract class Player : BaseRollable
         if (IsInPlayableLevel)
         {
             blocked = true;
-            yield return base.Start();
-
-            Wuso = 0;
-
+            while (!GameManager.Map.done) yield return null;
             GameManager.Map.SetObstacle(this);
             Turn();
             blocked = false;
@@ -71,8 +72,11 @@ public abstract class Player : BaseRollable
 
     public bool blocked;
 
+    public int ViewStamina;
     protected override void Update()
     {
+        ViewStamina = stamina;
+        ViewWuso = Wuso;
         base.Update();
         if (blocked || IsMoving || GameManager.Pool.InEnemyTurn || SceneManager.GetActiveScene().buildIndex % 2 == 0) return;
         if (stamina > 0)
@@ -125,8 +129,11 @@ public abstract class Player : BaseRollable
 
 
         }
-        if (addToWuso) Wuso += damage;
-        Wuso += NextAtkDmg;
+        if (addToWuso)
+        {
+            Wuso += damage;
+            Wuso += NextAtkDmg;
+        }
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {NextAtkDmg} damage");
         StartCoroutine(PlayOneshot(AttackAction(enemy, NextAtkDmg, renderAnimation)));
