@@ -543,8 +543,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 2952246987307389136}
   m_vCam: {fileID: 2952246986750791163}
   Faces: 
