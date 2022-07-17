@@ -13,11 +13,15 @@ public class Map : MonoBehaviour
 
 
     public bool done = false;
+    public float seedX, seedY;
 
     private void Awake()
     {
         done = false;
+        seedX = Random.value * 10f;
+        seedY = Random.value * 10f;
     }
+
 
     private void Start()
     {
@@ -28,7 +32,26 @@ public class Map : MonoBehaviour
         Height();
 
         Render();
+        
         done = true;
+    }
+
+    public List<(int, int)> GetEmptyAtDistance(int sz, int sx, int d)
+    {
+        var temp = new List<(int, int)>();
+        for(int i = 0; i < WIDTH; i++)
+        {
+            for (int j = 0; j < HEIGHT; j++)
+            {
+                if (Mathf.Abs(sz - i) + Mathf.Abs(sx - j) == d && Obstacle(i, j) == null)
+                {
+                    //Debug.Log((i, j));
+                    temp.Add((i, j));
+                }
+            }
+        }
+        // Debug.Log(string.Join(", ", temp));
+        return temp;
     }
 
     public int Weight(int sz, int sx, int ez, int ex) => Mathf.RoundToInt(Mathf.Abs(Grid(sz, sx) - Grid(ez, ex)));
@@ -106,9 +129,9 @@ public class Map : MonoBehaviour
             {
                 for (int j = 0; j < HEIGHT; j++)
                 {
-                    float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
+                    float h = Mathf.PerlinNoise(seedX + (i + l * WIDTH) * kElevateResolution / WIDTH, seedY + (j + l * HEIGHT) * kElevateResolution / WIDTH);
                     if (h > kElevateThreshold) m_Grid[i, j] += 1;
-                    else if (l == kHeightLoop - 1) m_Grid[i, j] += h / 2;
+                    else if (l == kHeightLoop - 1) m_Grid[i, j] += h;
                 }
             }
         }

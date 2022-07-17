@@ -13,4 +13,5 @@ public static class LinqExtensions
 
     public static T Random<T>(this IEnumerable<T> src) where T:Object
         => src.Count() == 0 ? null : src.ElementAt(Mathf.FloorToInt(UnityEngine.Random.value * src.Count()));
+
 }

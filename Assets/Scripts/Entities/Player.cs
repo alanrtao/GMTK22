@@ -36,25 +36,45 @@ public abstract class Player : BaseRollable
         Instance = this;
     }
 
+    public void GoToNextScene()
+    {
+        blocked = true;
+        DontDestroyOnLoad(gameObject);
+        if (!IsInPlayableLevel)
+            SceneManager.sceneLoaded += (prev, next) => StartCoroutine(Start_());
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
     protected override IEnumerator Start()
     {
         blocked = true;
         yield return base.Start();
-
-        Wuso = 0;
-
-        GameManager.Map.SetObstacle(this);
-        Turn();
-
-        blocked = false;
+        StartCoroutine(Start_());
     }
+
+    protected IEnumerator Start_()
+    {
+        if (IsInPlayableLevel)
+        {
+            blocked = true;
+            yield return base.Start();
+
+            Wuso = 0;
+
+            GameManager.Map.SetObstacle(this);
+            Turn();
+            blocked = false;
+        }
+    }
+
+    public static bool IsInPlayableLevel => true; // SceneManager.GetActiveScene().buildIndex % 2 == 0;
 
     public bool blocked;
 
     protected override void Update()
     {
         base.Update();
-        if (blocked || IsMoving || GameManager.Pool.InEnemyTurn) return;
+        if (blocked || IsMoving || GameManager.Pool.InEnemyTurn || SceneManager.GetActiveScene().buildIndex % 2 == 0) return;
         if (stamina > 0)
         {
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -87,7 +107,7 @@ public abstract class Player : BaseRollable
     public abstract void Ultimate();
 
     [SerializeField] protected BaseAnimation normalAttackVfx, ultimateVfx;
-    public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true)
+    public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true, bool addToWuso = true)
     {
         if (MyItems != null)
             MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
@@ -95,7 +115,7 @@ public abstract class Player : BaseRollable
         {
             //NextAtkDmg += FindClosestCurrFace(Vector3.up);
         }
-        Wuso += damage;
+        if (addToWuso) Wuso += damage;
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {damage} damage");
         StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));

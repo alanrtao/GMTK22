@@ -14,7 +14,7 @@ public abstract class BaseEnemy : BaseRollable
     protected override void Die() {
         GameManager.Pool.Pool.Remove(this);
         GameManager.Map.SetObstacle(Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x), null);
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     public bool done;
@@ -69,8 +69,8 @@ public abstract class BaseEnemy : BaseRollable
             for (int j = 0; j < cameFrom.GetLength(1); j++)
             {
                 cameFrom[i, j] = (-1, -1);
-                g[i, j] = int.MaxValue;
-                f[i, j] = int.MaxValue;
+                g[i, j] = float.MaxValue;
+                f[i, j] = float.MaxValue;
             }
         }
 
@@ -115,10 +115,13 @@ public abstract class BaseEnemy : BaseRollable
             }
         }
 
-        return (new List<(int, int)>(), new List<Direction>());
+        return Fallback(cameFrom, f, sz, sx);
     }
 
-    private (List<(int, int)>, List<Direction>) Reconstruct((int, int)[,] cameFrom, (int, int) curr)
+    protected virtual (List<(int, int)>, List<Direction>) Fallback((int, int)[,] cameFrom, float[,]f, int sz, int sx)
+        => (new List<(int, int)>(), new List<Direction>());
+
+    protected (List<(int, int)>, List<Direction>) Reconstruct((int, int)[,] cameFrom, (int, int) curr)
     {
         var total = new List<(int, int)> { curr };
         while (cameFrom[curr.Item1, curr.Item2].Item1 != -1)
