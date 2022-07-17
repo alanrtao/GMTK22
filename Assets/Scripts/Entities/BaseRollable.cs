@@ -73,6 +73,8 @@ public abstract class BaseRollable : MonoBehaviour
             GameManager.Map.SetObstacle(p0.Item1, p0.Item2, this);
             IsMoving = false;
             UpdateFaces(end);
+
+            //AfterMovement <--
         }
 
         StartCoroutine(RLerp(terminate));
@@ -205,7 +207,7 @@ public abstract class BaseRollable : MonoBehaviour
     public void AddToAllFaces(int add)
     {
         m_Faces = m_Faces.Select(s => {
-            s.Item1 -= add;
+            s.Item1 += add;
             if (s.Item1 < 0) s.Item1 = 0;
             return s;
         }).ToArray();
@@ -228,6 +230,9 @@ public abstract class BaseRollable : MonoBehaviour
             RollableRoot.rotation = bufR;
             bufP = Vector3.zero;
             bufR = Quaternion.identity;
+
+            //AfterAttack_Here;
+
             return;
         }
 

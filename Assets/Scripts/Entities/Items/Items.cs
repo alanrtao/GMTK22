@@ -4,20 +4,31 @@ using UnityEngine;
 
 public class Items : MonoBehaviour
 {
-    public enum ActivteStates {OnPickup, StartTurn, BeforeMovement, AfterMovement, BeforeAttack, AfterAttack, OnTakeDmg, EndTurn}
+    public static Items instance;
+    public enum ActivateStates {OnPickup, StartTurn, BeforeMovement, AfterMovement, BeforeAttack, AfterAttack, OnTakeDmg, EndTurn, Manual}
+    public enum Character {Public, Warrior, Rogue}
 
-    public struct Item
+    [System.Serializable]
+    public class Item
     {
-        string ItemName;
-        Sprite ItemIcon;
-        bool IsActivated;
+        public string ItemName;
+        public Sprite ItemIcon;
+        public bool IsActivated;
+        public Character CardCharacter;
     }
 
     public List<Item> ItemLibrary;
 
-    void Start()
+    void Awake()
     {
-        
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else 
+        {
+            instance = this;
+        }
     }
 
     void Update()
@@ -25,19 +36,28 @@ public class Items : MonoBehaviour
         
     }
 
-    public void UseItem(string Name, ActivteStates CurrentState) 
+    public void UseItem(string Name, ActivateStates CurrentState) 
     {
-        if (Name == "Debug Item") 
+        if (Name == "Debug") 
         {
-            if (CurrentState == ActivteStates.BeforeAttack) 
+            if (CurrentState == ActivateStates.OnPickup) 
             {
-                Debug.Log("Item activated before attack");
+                Debug.Log("Debug picked up!");
             }
+            if (CurrentState == ActivateStates.BeforeAttack) 
+            {
+                Debug.Log("Debug activated before attack");
+            }
+            if (CurrentState == ActivateStates.Manual) 
+            {
+                Debug.Log("Debug activated manually");
+            }
+
         }
 
         if (Name == "Charging Blow") 
         {
-            if (CurrentState == ActivteStates.AfterMovement) 
+            if (CurrentState == ActivateStates.AfterMovement) 
             {
                 //ToBeChanged
                 if (1 == 1) 
@@ -49,13 +69,12 @@ public class Items : MonoBehaviour
 
         if (Name == "Chili Pepper") 
         {
-            if (CurrentState == ActivteStates.OnPickup)
+            if (CurrentState == ActivateStates.OnPickup)
             {
                 Debug.Log("Picked up " + Name);
-                //ToBeChanged
-                //Player.Instance.NextAtkDmg += 2;
+                Player.Instance.AddToAllFaces(2);
             }
-            if (CurrentState == ActivteStates.EndTurn) 
+            if (CurrentState == ActivateStates.EndTurn) 
             {
                 Player.Instance.HP -= 2;
             }

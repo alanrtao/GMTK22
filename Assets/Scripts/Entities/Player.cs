@@ -16,6 +16,8 @@ public abstract class Player : BaseRollable
     public int NextAtkDmg;
     public int NextAtkMultiplier;
 
+    public PlayerItems MyItems;
+
     void Awake()
     {
         Instance = this;
@@ -58,10 +60,12 @@ public abstract class Player : BaseRollable
                 Ultimate();
             } else if (Input.GetKeyDown(KeyCode.Return))
             {
+                Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
                 GameManager.Pool.StartEnemyTurns();
             }
         } else
         {
+            Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
             GameManager.Pool.StartEnemyTurns();
         }
     }
@@ -70,6 +74,7 @@ public abstract class Player : BaseRollable
 
     public virtual void Attack(int damage, BaseEnemy enemy)
     {
+        MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
         if (this is Warrior) 
         {
             //NextAtkDmg += FindClosestCurrFace(Vector3.up);
@@ -158,5 +163,7 @@ public abstract class Player : BaseRollable
 
             yield return new WaitForEndOfFrame();
         }
+        
+        //OnTakeDmg <-- 
     }
 }
