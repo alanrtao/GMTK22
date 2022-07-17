@@ -7,20 +7,30 @@ using Cinemachine;
 
 public abstract class BaseRollable : MonoBehaviour
 {
+    public int shield = 0;
+
     public int MAX_HP;
-    public int HP
-    {
-        get => m_HP;
-        set
+    public int HP => m_HP;
+
+    public void ChangeHPBy(int by, bool piercing = false) {
+        if (!piercing && shield > 0)
         {
-            if (value != m_HP)
-            {
-                Debug.Log($"{ gameObject.name } on HP change to {value}");
-                if (value < m_HP) StartCoroutine(TakeDamageAnimation(m_HP - value));
-                m_HP = Mathf.Max(0, value);
-                m_HP = Mathf.Min(MAX_HP, m_HP);
-                if (m_HP == 0) Die();
-            }
+            var blockedDmg = Mathf.Min(-by, (this as Player).shield);
+            by += blockedDmg;
+            shield -= blockedDmg;
+        }
+
+        if (by < 0)
+        {
+            Debug.Log($"Taking actual damage {by}");
+            StartCoroutine(TakeDamageAnimation(by));
+            m_HP = Mathf.Max(0, m_HP + by);
+            if (m_HP == 0) Die();
+        }
+
+        else if (by > 0)
+        {
+            m_HP = Math.Min(MAX_HP, m_HP);
         }
     }
 
@@ -239,7 +249,7 @@ public abstract class BaseRollable : MonoBehaviour
         if (t == 0)
         {
             Debug.Log("Trigger HP change");
-            target.HP -= attack;
+            target.ChangeHPBy(-attack);
             if (renderAnimation)
             {
                 bufP = transform.position;

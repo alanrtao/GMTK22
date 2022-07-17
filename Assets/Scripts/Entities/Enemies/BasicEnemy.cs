@@ -74,10 +74,5 @@ public class BasicEnemy : BaseEnemy
 
     [SerializeField] TMPro.TextMeshPro AlertUI;
     protected void ShowAlert(bool b) => AlertUI.enabled = b;
-
-    protected override IEnumerator TakeDamageAnimation(int damage)
-    {
-        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
-        yield return new WaitForFixedUpdate();
-    }
+    
 }

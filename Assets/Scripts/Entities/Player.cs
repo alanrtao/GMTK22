@@ -12,6 +12,7 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
+
     [Header("The Damage Next Attack is going to deal")]
     public int NextAtkDmg = 0;
     public int NextAtkMultiplier = 1;
@@ -75,19 +76,11 @@ public abstract class Player : BaseRollable
                 Ultimate();
             } else if (Input.GetKeyDown(KeyCode.Return))
             {
-                if (MyItems != null) 
-                {
-                    Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
-                }
-                GameManager.Pool.StartEnemyTurns();
+                TurnEnd();
             }
         } else
         {
-            if (MyItems != null)
-            {
-                Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
-            }
-            GameManager.Pool.StartEnemyTurns();
+            TurnEnd();
         }
     }
 
@@ -164,7 +157,18 @@ public abstract class Player : BaseRollable
 
     public void Turn()
     {
+        shield = 0;
         stamina = MAX_STAMINA;
+    }
+
+    public virtual void TurnEnd()
+    {
+        Debug.Log("Turn end");
+        if (MyItems != null)
+        {
+            Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
+        }
+        GameManager.Pool.StartEnemyTurns();
     }
 
     protected override void Die()
@@ -180,7 +184,7 @@ public abstract class Player : BaseRollable
         blocked = true;
         Wuso += damage;
 
-        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
+        // collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
         float t = 0;
 
