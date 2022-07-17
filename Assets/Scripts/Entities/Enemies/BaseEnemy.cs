@@ -17,6 +17,10 @@ public abstract class BaseEnemy : BaseRollable
         Destroy(gameObject);
     }
 
+    public void SetHP(int hp) => m_HP = hp;
+
+    public int wave = 0;
+
     public bool done;
     public IEnumerator Turn()
     {
