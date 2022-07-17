@@ -122,7 +122,6 @@ public abstract class Player : BaseRollable
         NextAtkDmg += damage; 
         NextAtkDmg *= NextAtkMultiplier;
 
-        damage = NextAtkDmg;
         if (this is Warrior) 
         {
             
@@ -131,7 +130,6 @@ public abstract class Player : BaseRollable
         }
         if (addToWuso)
         {
-            Wuso += damage;
             Wuso += NextAtkDmg;
         }
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);

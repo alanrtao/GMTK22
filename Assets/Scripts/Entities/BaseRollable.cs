@@ -247,6 +247,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     private Vector3 bufP;
     private Quaternion bufR;
+    private Vector3 bufT;
     protected virtual ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
         IsMoving = true;
@@ -257,6 +258,7 @@ public abstract class BaseRollable : MonoBehaviour
             {
                 bufP = transform.position;
                 bufR = RollableRoot.rotation;
+                bufT = target.transform.position;
             }
             return;
         } else if (t == 1)
@@ -285,7 +287,7 @@ public abstract class BaseRollable : MonoBehaviour
             var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
             var parab = 1 - (1 - prog) * (1 - prog);
 
-            transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+            transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (bufT - bufP) * 0.2f * prog;
 
             RollableRoot.rotation = Quaternion.AngleAxis(
                 parab * 10f,
