@@ -213,7 +213,7 @@ public abstract class Player : BaseRollable
     protected override void Die()
     {
         blocked = true;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(2);
     }
 
     [SerializeField] PostProcessProfile profile;
