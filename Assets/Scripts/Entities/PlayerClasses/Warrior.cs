@@ -63,7 +63,13 @@ public class Warrior : Player
             }),
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);
-                if (t == 1) Wuso = wuBuf;
+                if (t == 1) {
+                    if (stamina > 0)
+                    {
+                        stamina -= 1;
+                    }
+                    Wuso = wuBuf;
+                }
             })
         };
         StartCoroutine(UltimateAnimation(stages));

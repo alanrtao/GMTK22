@@ -47,14 +47,14 @@ public class EnemyPool : MonoBehaviour
             if (candidates.Count > 0)
             {
                 var pick = candidates[Mathf.FloorToInt(Random.value * candidates.Count)];
-                GameObject enemy;
-                if (Random.value < 0.3f)
-                {
-                    enemy = Instantiate(RangedEnemyPrototype, transform);
-                } else
-                {
-                    enemy = Instantiate(BasicEnemyPrototype, transform);
-                }
+                GameObject enemy = Instantiate(BasicEnemyPrototype, transform);
+                //if (Random.value < 0.3f)
+                //{
+                //    enemy = Instantiate(RangedEnemyPrototype, transform);
+                //} else
+                //{
+                //    enemy = Instantiate(BasicEnemyPrototype, transform);
+                //}
                 enemy.transform.position = new Vector3(pick.Item2, 0, pick.Item1);
                 m_EnemyPool.Add(enemy.GetComponent<BaseEnemy>());
                 GameManager.Map.SetObstacle(enemy.GetComponent<BaseEnemy>());
