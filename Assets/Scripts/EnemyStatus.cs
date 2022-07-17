@@ -10,6 +10,6 @@ public class EnemyStatus : MonoBehaviour
 
     void Update()
     {
-        T.text = Me.kAttack + "/" + Me.HP;
+        T.text = Me.HP + "/" + Me.MAX_HP;
     }
 }
