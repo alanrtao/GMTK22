@@ -17,7 +17,7 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(MyMaster.HP / MyMaster.MAX_HP);
+        // Debug.Log(MyMaster.HP / MyMaster.MAX_HP);
         MyBar.rectTransform.localScale = new Vector2((float)MyMaster.HP / (float)MyMaster.MAX_HP * InitialScale.x, InitialScale.y);
     }
 }

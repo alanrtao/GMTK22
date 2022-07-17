@@ -31,31 +31,35 @@ public class BasicEnemy : BaseEnemy
         var sz = Mathf.RoundToInt(transform.position.z);
         var moves = AStar(sz, sx, ez, ex);
 
-        moves.Item1 = moves.Item1.Take(kSteps + 1).ToList();
+        moves.Item1 = moves.Item1.Take(kSteps).ToList();
         moves.Item2 = moves.Item2.Take(kSteps).ToList();
 
         // after how many steps, the enemy is adjacent to the player
         var idx = moves.Item1.FindIndex(p => p.Item1 == ez && p.Item2 == ex);
 
+        Debug.Log($"{gameObject.name} action: {string.Join(", ", moves.Item1)}, {string.Join(", ", moves.Item2)}, attack at step {idx}");
+
         if (idx == 0)
         {
             // stay and attack
-            if (!alertBuffer)
-            {
-                alertBuffer = true;
-                ShowAlert(true);
-            } else
-            {
+            //if (!alertBuffer)
+            //{
+            //    alertBuffer = true;
+            //    ShowAlert(true);
+            //} else
+            //{
+                Debug.Log($"Enter attack action for { gameObject.name }");
                 stages.Add(AttackAction(Player.Instance, kAttack));
                 ShowAlert(false);
-            }
+            //}
         } else if (idx > 0)
         {
             // walk up to the player
             stages.Add(MovesAction(moves.Item2.Take(Mathf.Min(idx, kSteps)).ToList()));
-            alertBuffer = true;
-            ShowAlert(true);
+            //alertBuffer = true;
+            //ShowAlert(true);
             // stages.Add(AttackAction(Player.Instance, kAttack));
+            stages.Add(AttackAction(Player.Instance, kAttack));
         } else
         {
             // walk the full path

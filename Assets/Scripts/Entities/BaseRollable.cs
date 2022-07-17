@@ -15,9 +15,10 @@ public abstract class BaseRollable : MonoBehaviour
         {
             if (value != m_HP)
             {
-                Debug.Log($"{ gameObject.name } take damage");
+                Debug.Log($"{ gameObject.name } on HP change to {value}");
                 if (value < m_HP) StartCoroutine(TakeDamageAnimation(m_HP - value));
                 m_HP = Mathf.Max(0, value);
+                m_HP = Mathf.Min(MAX_HP, m_HP);
                 if (m_HP == 0) Die();
             }
         }
@@ -127,7 +128,7 @@ public abstract class BaseRollable : MonoBehaviour
         if (pending.Count == 0)
         {
             complete(end);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.25f);
             IsMoving = false;
         }
         else
@@ -237,6 +238,7 @@ public abstract class BaseRollable : MonoBehaviour
     {
         if (t == 0)
         {
+            Debug.Log("Trigger HP change");
             target.HP -= attack;
             if (renderAnimation)
             {
