@@ -33,6 +33,7 @@ public class Map : MonoBehaviour
     /// <returns>z, x</returns>
     public (int, int) Expand(int f) => (f / WIDTH, f % WIDTH);
 
+    public float Grid((float, float) p) => Grid(p.Item1, p.Item2);
     public float Grid(float z, float x) => Grid(
         Mathf.FloorToInt(z), Mathf.FloorToInt(x)
         );
@@ -70,18 +71,20 @@ public class Map : MonoBehaviour
         }
     }
 
-    [SerializeField] int kHeightLoop;
+    [SerializeField] float kElevateThreshold;
+    [SerializeField] float kElevateResolution;
     private void Height()
     {
+        var kHeightLoop = floorTiles.Count - 1;
         for(int l = 0; l < kHeightLoop; l++)
         {
-
             for (int i = 0; i < WIDTH; i++)
             {
                 for (int j = 0; j < HEIGHT; j++)
                 {
-                    float h = Mathf.PerlinNoise(i + l * WIDTH, j + l * HEIGHT);
-
+                    float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
+                    if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 0.5f;
+                    else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 4;
                 }
             }
         }
@@ -89,16 +92,17 @@ public class Map : MonoBehaviour
 
     [SerializeField] GameObject floorTilePrototype;
     [SerializeField] List<Sprite> floorTiles;
+    [SerializeField] float kAltitude = 0.3f;
     private void Render()
     {
         for (int i = 0; i < WIDTH; i++) {
             for(int j  =0; j < HEIGHT; j++) {
                 var ftp = Instantiate(floorTilePrototype, transform);
-                ftp.transform.position = new Vector3(j, 0, i);
-                // ftp.GetComponent<SpriteRenderer>().sprite = floorTiles.Random();
-                ftp.transform.rotation = Quaternion.AngleAxis(
-                    Mathf.FloorToInt(Random.value * 4) * 90, Vector3.up
-                    ) * ftp.transform.rotation;
+                var altitude = Grid(i, j);
+                Debug.Log(altitude);
+                ftp.transform.position = new Vector3(j, altitude * kAltitude, i);
+                // ftp.transform.localScale = new Vector3(1, altitude * kAltitude, 1);
+                ftp.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = floorTiles[Mathf.FloorToInt(altitude)];
             }
         }
     }

@@ -142,7 +142,7 @@ public class Player : BaseRollable
             vignette.color = c;
 
             var i = vignette.intensity;
-            i.value = 0.2f * (1 - Mathf.Pow(1 - p, 3));
+            i.value = 0.2f * Mathf.Pow(1 - p, 3);
             vignette.intensity = i;
 
             yield return new WaitForEndOfFrame();
