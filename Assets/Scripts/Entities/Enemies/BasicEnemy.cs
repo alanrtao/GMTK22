@@ -73,7 +73,7 @@ public class BasicEnemy : BaseEnemy
 
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
-        collisionSource.GenerateImpulse();
+        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
     }
 }

@@ -11,9 +11,6 @@ public abstract class BaseEnemy : BaseRollable
 
     public abstract void UpdateStages(int index);
 
-
-    public virtual void TakeDamage(int damage) => HP -= damage;
-
     protected override void Die() {
         GameManager.Pool.Pool.Remove(this);
         GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), null);

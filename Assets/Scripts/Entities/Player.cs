@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 
 public class Player : BaseRollable
 {
@@ -65,7 +66,6 @@ public class Player : BaseRollable
     {
         Debug.Log($"Dealing {damage} damage");
         StartCoroutine(PlayOneshot(AttackAction(enemy, damage)));
-        enemy.TakeDamage(damage);
     }
 
     public IEnumerator PlayOneshot(ActionStage action)
@@ -123,20 +123,28 @@ public class Player : BaseRollable
         SceneManager.LoadScene(0);
     }
 
+    [SerializeField] PostProcessProfile profile;
+    const float tDamage = 0.5f;
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
-        collisionSource.GenerateImpulse();
+        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
         float t = 0;
-        while (t < 0.25f)
+
+        var vignette = profile.GetSetting<Vignette>();
+        while (t < tDamage * (1 + Mathf.Log(damage)))
         {
-            var p = t / 0.25f;
+            var p = t / tDamage;
             t += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        while (t < 0.5f) {
-            var p = (t - 0.25f) / 0.25f;
-            t += Time.deltaTime;
+
+            var c = vignette.color;
+            c.value = ColorExtensions.LerpOpaque(Color.red, Color.black, 1 - Mathf.Pow(1 - p, 3));
+            vignette.color = c;
+
+            var i = vignette.intensity;
+            i.value = 0.2f * (1 - Mathf.Pow(1 - p, 3));
+            vignette.intensity = i;
+
             yield return new WaitForEndOfFrame();
         }
     }

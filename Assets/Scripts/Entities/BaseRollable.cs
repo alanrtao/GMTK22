@@ -14,6 +14,7 @@ public abstract class BaseRollable : MonoBehaviour
         {
             if (value != m_HP)
             {
+                Debug.Log($"{ gameObject.name } take damage");
                 if (value < m_HP) StartCoroutine(TakeDamageAnimation(m_HP - value));
                 m_HP = Mathf.Max(0, value);
                 if (m_HP == 0) Die();
@@ -141,6 +142,7 @@ public abstract class BaseRollable : MonoBehaviour
     protected ActionStage AttackAction(BaseRollable target, int attack) => new ActionStage(0.25f, (t) =>
     {
         if (t == 0) {
+            target.HP -= attack;
             bufP = transform.position;
             bufR = RollableRoot.rotation;
             return;
