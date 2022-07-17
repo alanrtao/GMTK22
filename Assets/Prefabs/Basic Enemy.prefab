@@ -109,8 +109,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282072000
-  m_fontColor: {r: 0.754717, g: 0.23211111, b: 0.23211111, a: 1}
+    rgba: 4280202679
+  m_fontColor: {r: 0.7169812, g: 0.70872366, b: 0.11836952, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -877,18 +877,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -5732851637231200705, guid: 87dbf01c4161b4f12a3ddd6e2ca5b5d1, type: 3}
-    - target: {fileID: 5533102982476260442, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: bd07a6946171447469cc0d9ba1c6153d, type: 2}
     - target: {fileID: 6043544393665551414, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -5732851637231200705, guid: 87dbf01c4161b4f12a3ddd6e2ca5b5d1, type: 3}
-    - target: {fileID: 6043544393665551414, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: bd07a6946171447469cc0d9ba1c6153d, type: 2}
     - target: {fileID: 7355959052468909967, guid: 7cb256d96bae748068394ea434f92a03, type: 3}
       propertyPath: m_Sprite
       value: 
