@@ -87,7 +87,7 @@ public class Map : MonoBehaviour
                 {
                     float h = Mathf.PerlinNoise((i + l * WIDTH) * kElevateResolution / WIDTH, (j + l * HEIGHT) * kElevateResolution / WIDTH);
                     if (h > kElevateThreshold) m_Grid[Fold(i, j)] += 1;
-                    else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 4;
+                    else if (l == kHeightLoop - 1) m_Grid[Fold(i, j)] += h / 2;
                 }
             }
         }
@@ -96,6 +96,7 @@ public class Map : MonoBehaviour
     [SerializeField] GameObject floorTilePrototype;
     [SerializeField] List<Sprite> floorTiles;
     [SerializeField] float kAltitude = 0.3f;
+    public float AltModifier => kAltitude;
     private void Render()
     {
         for (int i = 0; i < WIDTH; i++) {

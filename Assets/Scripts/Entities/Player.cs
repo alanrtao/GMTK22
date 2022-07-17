@@ -19,11 +19,13 @@ public abstract class Player : BaseRollable
 
     protected override IEnumerator Start()
     {
+        blocked = true;
         yield return base.Start();
-        blocked = false;
 
         GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
         Turn();
+
+        blocked = false;
     }
 
     public bool blocked;

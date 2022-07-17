@@ -42,14 +42,14 @@ public abstract class BaseRollable : MonoBehaviour
             m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
         }
 
-        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation) this).position_GRD);
+        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation) this).position_GRD) * GameManager.Map.AltModifier;
     }
 
     protected void Place(Orientation o, float altitude)
     {
         transform.position = new Vector3(
             o.position_GRD.Item2,
-            altitude,
+            altitude * GameManager.Map.AltModifier,
             o.position_GRD.Item1);
         m_RollableRoot.localRotation = o.rotation_LS;
     }
