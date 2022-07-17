@@ -156,13 +156,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 
-
-    public void AddToOriginalOrientationFace(int add, CubemapFace face)
-    {
-        var idx = CubeFaceToIndex(face);
-        m_Faces[idx].Item1 += add;
-        if (m_Faces[idx].Item1 < 0) m_Faces[idx].Item1 = 0;
-    }
+    
 
     public static int CubeFaceToIndex(CubemapFace face)
     {
@@ -178,11 +172,34 @@ public abstract class BaseRollable : MonoBehaviour
         }
     }
 
+    public static int OriginalNumberToIndex(int original)
+    {
+        return Faces0.ToList().FindIndex(s => s.Item1 == original);
+    }
+
+    private void ClampedAdd(int idx, int add)
+    {
+        m_Faces[idx].Item1 += add;
+        if (m_Faces[idx].Item1 < 0) m_Faces[idx].Item1 = 0;
+    }
+
+    public void AddToOriginalOrientationFace(int add, int original)
+    {
+        var idx = OriginalNumberToIndex(original);
+        ClampedAdd(idx, add);
+    }
+
+    public void AddToOriginalOrientationFace(int add, CubemapFace face)
+    {
+        var idx = CubeFaceToIndex(face);
+        ClampedAdd(idx, add);
+    }
+
+
     public void AddToFace(int add, Vector3 dir)
     {
         var idx = FindClosestIdxFace(dir);
-        m_Faces[idx].Item1 += add;
-        if (m_Faces[idx].Item1 < 0) m_Faces[idx].Item1 = 0;
+        ClampedAdd(idx, add);
     }
 
     public void AddToAllFaces(int add)
@@ -191,8 +208,7 @@ public abstract class BaseRollable : MonoBehaviour
             s.Item1 -= add;
             if (s.Item1 < 0) s.Item1 = 0;
             return s;
-        })
-            .ToArray();
+        }).ToArray();
     }
 
     protected abstract void Die();
