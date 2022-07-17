@@ -93,6 +93,7 @@ public abstract class Player : BaseRollable
         {
             MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
         }
+        NextAtkDmg *= NextAtkMultiplier;
         if (this is Warrior) 
         {
             

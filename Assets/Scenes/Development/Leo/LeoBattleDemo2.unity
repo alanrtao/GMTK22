@@ -1210,6 +1210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 2093907680}
@@ -1219,7 +1220,7 @@ MonoBehaviour:
   collisionSource: {fileID: 423508011}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 628585534}
 --- !u!1 &425229605
 GameObject:
@@ -1310,6 +1311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 1473315272}
@@ -1319,7 +1321,7 @@ MonoBehaviour:
   collisionSource: {fileID: 425229607}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 729998840}
 --- !u!1 &450012074
 GameObject:
@@ -1531,6 +1533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 13152197}
@@ -1540,7 +1543,7 @@ MonoBehaviour:
   collisionSource: {fileID: 459105853}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 199894178}
 --- !u!1 &470998166
 GameObject:
@@ -3001,6 +3004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 2132623487}
@@ -3010,7 +3014,7 @@ MonoBehaviour:
   collisionSource: {fileID: 809794249}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 294125557}
 --- !u!1 &813423707
 GameObject:
@@ -3900,6 +3904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe1ea3a562194d87b8fef0071ad6e51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 40
   m_HP: 40
   m_RollableRoot: {fileID: 220681027}
@@ -3911,7 +3916,6 @@ MonoBehaviour:
   NextAtkDmg: 0
   NextAtkMultiplier: 0
   MyItems: {fileID: 0}
-  wuso: 48
   blocked: 0
   normalAttackVfx: {fileID: 249104381}
   ultimateVfx: {fileID: 58120670}
@@ -3949,6 +3953,7 @@ MonoBehaviour:
   MyItemList:
   - ItemName: 
     ItemIcon: {fileID: 0}
+    ItemIntro: 
     IsActivated: 0
     CardCharacter: 0
 --- !u!1 &1299535302
@@ -4068,8 +4073,45 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[1].ItemIcon
+      value: 
+      objectReference: {fileID: -460425788988848577, guid: 155c0acfae028de49840ee0656713bfd, type: 3}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[2].ItemIcon
+      value: 
+      objectReference: {fileID: 4642587154540396213, guid: 155c0acfae028de49840ee0656713bfd, type: 3}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
       propertyPath: ItemLibrary.Array.data[2].ItemName
       value: Charge Up
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[3].ItemIcon
+      value: 
+      objectReference: {fileID: 2627265867872740407, guid: 155c0acfae028de49840ee0656713bfd, type: 3}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[3].ItemName
+      value: Double Edge
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[1].ItemIntro
+      value: All attacks deal 2 extra dmg, lose 1 hp at the end of each turn
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[2].ItemIntro
+      value: If you rolled 1, next attack deal double dmg.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[3].ItemIntro
+      value: 'Activate: Next attack deals double dmg but you will take half of that
+        damage.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[2].CardCharacter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[3].CardCharacter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6126166021215761317, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
       propertyPath: m_RootOrder
@@ -4285,6 +4327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 128059892}
@@ -4294,7 +4337,7 @@ MonoBehaviour:
   collisionSource: {fileID: 1434266843}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 2107080790}
 --- !u!1 &1473315271
 GameObject:
@@ -5065,6 +5108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 1555053240}
@@ -5074,7 +5118,7 @@ MonoBehaviour:
   collisionSource: {fileID: 1744821775}
   done: 0
   kAttack: 4
-  kSteps: 2
+  kSteps: 3
   AlertUI: {fileID: 525106385}
 --- !u!1 &1768804012
 GameObject:

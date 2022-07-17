@@ -264,6 +264,13 @@ public abstract class BaseRollable : MonoBehaviour
                 bufP = Vector3.zero;
                 bufR = Quaternion.identity;
             }
+            //AfterAttack <--
+            if (this is Player) 
+            { 
+                var player = (Player)this;
+                player.NextAtkDmg = 0;
+                player.NextAtkMultiplier = 1;
+            }
             return;
         }
 
