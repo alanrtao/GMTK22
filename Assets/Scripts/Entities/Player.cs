@@ -16,7 +16,18 @@ public abstract class Player : BaseRollable
     public int NextAtkMultiplier = 1;
 
     public PlayerItems MyItems;
-    public int wuso = 0;
+    public int Wuso
+    {
+        get => m_Wuso;
+        set
+        {
+            if (value != m_Wuso) {
+                m_Wuso = Mathf.Min(24, Mathf.Max(0, value));
+                Debug.Log($"Player wuso changed to {m_Wuso}");
+            }
+        }
+    }
+    protected int m_Wuso = 0;
 
     void Awake()
     {
@@ -28,7 +39,7 @@ public abstract class Player : BaseRollable
         blocked = true;
         yield return base.Start();
 
-        wuso = 0;
+        Wuso = 0;
 
         GameManager.Map.SetObstacle(this);
         Turn();
@@ -95,7 +106,7 @@ public abstract class Player : BaseRollable
 
 
         }
-        wuso += damage;
+        Wuso += damage;
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {damage} damage");
         StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));
@@ -167,7 +178,7 @@ public abstract class Player : BaseRollable
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
         blocked = true;
-        wuso += damage;
+        Wuso += damage;
 
         collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();

@@ -24,20 +24,23 @@ public class EnemyPool : MonoBehaviour
 
     public void StartEnemyTurns() => StartCoroutine(TakeTurns());
 
+    private int tCount = 0;
     private IEnumerator TakeTurns()
     {
+        Debug.Log($"Entering Turn {tCount++}");
         Player.Instance.blocked = true;
+        Player.Instance.Turn();
+
         for (var i = 0; i < m_EnemyPool.Count; i++)
         {
             var e = m_EnemyPool[i];
             e.done = false;
             e.UpdateStages(i);
             StartCoroutine(e.Turn());
-            while (!e.done)
+            while (!e.done || e.IsMoving)
                 yield return null;
         }
 
         Player.Instance.blocked = false;
-        Player.Instance.Turn();
     }
 }
