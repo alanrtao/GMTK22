@@ -154,12 +154,12 @@ public abstract class BaseRollable : MonoBehaviour
         }
     }
 
-    protected int FindClosestCurrFace(Vector3 dir) {
+    public int FindClosestCurrFace(Vector3 dir) {
         var i = m_Faces.OrderBy(f => Vector3.Distance(dir, f.Item2)).First();
         return i.Item1;
     }
 
-    protected int FindClosestIdxFace(Vector3 dir)
+    public int FindClosestIdxFace(Vector3 dir)
     {
         var dist = float.MaxValue;
         int min = -1;

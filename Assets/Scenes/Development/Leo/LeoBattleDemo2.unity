@@ -159,7 +159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -37.2, y: -63.7}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1570309
@@ -178,6 +178,7 @@ MonoBehaviour:
   FollowMaster: 0
   InitialScale: {x: 0, y: 0, z: 0}
   MyBar: {fileID: 1553034625}
+  HealthNumber: {fileID: 980263184}
 --- !u!1 &13152196
 GameObject:
   m_ObjectHideFlags: 0
@@ -4061,6 +4062,14 @@ PrefabInstance:
     - target: {fileID: 6126166021215761315, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
       propertyPath: m_Name
       value: ItemManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[2].ItemName
+      value: Charge Up
       objectReference: {fileID: 0}
     - target: {fileID: 6126166021215761317, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
       propertyPath: m_RootOrder
