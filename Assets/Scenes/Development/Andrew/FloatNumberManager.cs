@@ -5,7 +5,7 @@ using TMPro;
 
 public class FloatNumberManager : MonoBehaviour
 {
-    
+    public static FloatNumberManager Instance;
     //public GameObject floatingNumber;
 
     //display the type of the damage in this order, (1)heal, (2)armor, (3)damage with block, (4)damage without block
@@ -18,13 +18,21 @@ public class FloatNumberManager : MonoBehaviour
     //the target object that the number will display at
     public GameObject targetObject;
 
-
-    
-    //public int damageType;
-
     public int inputValue;
 
     public int damageType;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else 
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -36,17 +44,7 @@ public class FloatNumberManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.RightShift))
         {
-            //Debug.Log("r shift pressed");
-
-            //Debug.Log(numberType[3]);
-            displayNumber(targetObject, damageType, inputValue);
-            /*
-            clone = Instantiate(floatingNumber, transform.position+new Vector3(-8, 8,-5), Quaternion.Euler(new Vector3(35,45,0)));
-            Debug.Log("first "+clone.transform.GetChild(0).GetComponent<TextMeshPro>().text);
-            clone.transform.GetChild(0).GetComponent<TextMeshPro>().text = inputValue.ToString();
-            Debug.Log("after " + clone.transform.GetChild(0).GetComponent<TextMeshPro>().text);
-            Destroy(clone, 1f);
-            */
+            displayNumber(Player.Instance.gameObject, 1, 6);
         } 
     }
 
