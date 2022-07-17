@@ -5,7 +5,7 @@ using System.Linq;
 
 public class BasicEnemy : BaseEnemy
 {
-    [SerializeField] int kAttack = 4;
+    public int kAttack = 4;
     [SerializeField] int kSteps = 2;
 
     protected bool alertBuffer = false;
