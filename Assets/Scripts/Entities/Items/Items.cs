@@ -88,6 +88,9 @@ public class Items : MonoBehaviour
             }
         }
 
-        if (Name == "")
+        if (Name == "Gauntlet") 
+        {
+            
+        }
     }
 }
