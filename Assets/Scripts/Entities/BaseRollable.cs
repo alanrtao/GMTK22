@@ -7,6 +7,7 @@ using Cinemachine;
 
 public abstract class BaseRollable : MonoBehaviour
 {
+    public int MAX_HP;
     public int HP
     {
         get => m_HP;
