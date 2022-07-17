@@ -30,6 +30,7 @@ public abstract class BaseRollable : MonoBehaviour
     public CinemachineVirtualCamera vCam => m_vCam;
     [SerializeField] private CinemachineVirtualCamera m_vCam;
 
+    public int[] Faces;
     protected (int, Vector3)[] m_Faces;
 
     protected virtual IEnumerator Start()
@@ -37,12 +38,17 @@ public abstract class BaseRollable : MonoBehaviour
         while (!GameManager.Map.done) yield return new WaitForEndOfFrame();
 
         m_Faces = new (int, Vector3)[Faces0.Length];
-        for(int i = 0; i < Faces0.Length; i++)
+        for (int i = 0; i < Faces0.Length; i++)
         {
             m_Faces[i] = (Faces0[i].Item1, Faces0[i].Item2);
         }
 
-        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation) this).position_GRD) * GameManager.Map.AltModifier;
+        transform.position += Vector3.up * GameManager.Map.Grid(((Orientation)this).position_GRD) * GameManager.Map.AltModifier;
+    }
+
+    protected virtual void Update()
+    {
+        if (m_Faces != null) Faces = m_Faces.Select(i => i.Item1).ToArray();
     }
 
     protected void Place(Orientation o, float altitude)
@@ -54,7 +60,7 @@ public abstract class BaseRollable : MonoBehaviour
         m_RollableRoot.localRotation = o.rotation_LS;
     }
 
-    public virtual void Move(Direction d) => Move(new List<Direction>(){d});
+    public virtual void Move(Direction d) => Move(new List<Direction>() { d });
 
     private List<Direction> pending;
     public virtual void Move(List<Direction> ds)
@@ -97,7 +103,7 @@ public abstract class BaseRollable : MonoBehaviour
 
         while (t_ < tMove) {
             var p = t_ / tMove;
-            var o = Orientation.Lerp(start, end, 1 - Mathf.Pow(1-p, 3));
+            var o = Orientation.Lerp(start, end, 1 - Mathf.Pow(1 - p, 3));
             Place(o, Mathf.Lerp(
                 GameManager.Map.Grid(start.position_GRD),
                 GameManager.Map.Grid(end.position_GRD),
@@ -130,7 +136,7 @@ public abstract class BaseRollable : MonoBehaviour
     protected void UpdateFaces(Orientation end) {
         var rot = end.rotation_LS;
 
-        for(int i = 0; i < Faces0.Length; i++)
+        for (int i = 0; i < Faces0.Length; i++)
         {
             m_Faces[i] = (m_Faces[i].Item1, rot * Faces0[i].Item2);
         }
@@ -145,7 +151,7 @@ public abstract class BaseRollable : MonoBehaviour
     {
         var dist = float.MaxValue;
         int min = -1;
-        for(int i = 0; i < m_Faces.Length; i++) {
+        for (int i = 0; i < m_Faces.Length; i++) {
             if (Vector3.Distance(dir, m_Faces[i].Item2) < dist) {
                 min = i;
                 dist = Vector3.Distance(dir, m_Faces[i].Item2);
@@ -156,7 +162,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 
-    
+
 
     public static int CubeFaceToIndex(CubemapFace face)
     {
@@ -215,7 +221,7 @@ public abstract class BaseRollable : MonoBehaviour
 
     private Vector3 bufP;
     private Quaternion bufR;
-    protected ActionStage AttackAction(BaseRollable target, int attack) => new ActionStage(0.25f, (t) =>
+    protected ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
         if (t == 0) {
             target.HP -= attack;
@@ -229,7 +235,7 @@ public abstract class BaseRollable : MonoBehaviour
             bufP = Vector3.zero;
             bufR = Quaternion.identity;
             return;
-        }
+        } else if (!renderAnimation) return;
 
         var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
         var parab = 1 - (1 - prog) * (1 - prog);
@@ -241,6 +247,8 @@ public abstract class BaseRollable : MonoBehaviour
             Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
             bufR;
     });
+
+    protected ActionStage PauseAction(float t) => new ActionStage(t, _ => { });
 
     [SerializeField] protected CinemachineImpulseSource collisionSource;
     protected abstract IEnumerator TakeDamageAnimation(int damage);

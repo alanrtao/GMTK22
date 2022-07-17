@@ -52,7 +52,7 @@ public class BasicEnemy : BaseEnemy
         } else if (idx > 0)
         {
             // walk up to the player
-            stages.Add(MovesAction(moves.Item2.Take(idx).ToList()));
+            stages.Add(MovesAction(moves.Item2.Take(Mathf.Min(idx, kSteps)).ToList()));
             alertBuffer = true;
             ShowAlert(true);
             // stages.Add(AttackAction(Player.Instance, kAttack));

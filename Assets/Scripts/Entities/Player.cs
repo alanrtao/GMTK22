@@ -12,6 +12,8 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
+    public int wuso = 0;
+
     void Awake()
     {
         Instance = this;
@@ -22,6 +24,8 @@ public abstract class Player : BaseRollable
         blocked = true;
         yield return base.Start();
 
+        wuso = 0;
+
         GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
         Turn();
 
@@ -30,8 +34,9 @@ public abstract class Player : BaseRollable
 
     public bool blocked;
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (blocked) return;
         if (stamina > 0)
         {
@@ -64,10 +69,13 @@ public abstract class Player : BaseRollable
 
     public abstract void Ultimate();
 
-    public virtual void Attack(int damage, BaseEnemy enemy)
+    [SerializeField] protected BaseAnimation normalAttackVfx, ultimateVfx;
+    public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true)
     {
+        wuso += damage;
+        if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {damage} damage");
-        StartCoroutine(PlayOneshot(AttackAction(enemy, damage)));
+        StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));
     }
 
     public IEnumerator PlayOneshot(ActionStage action)
@@ -129,6 +137,8 @@ public abstract class Player : BaseRollable
     const float tDamage = 0.5f;
     protected override IEnumerator TakeDamageAnimation(int damage)
     {
+        wuso += damage;
+
         collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
         yield return new WaitForFixedUpdate();
         float t = 0;

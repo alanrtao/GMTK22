@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Map : MonoBehaviour
 {
@@ -52,7 +53,17 @@ public class Map : MonoBehaviour
             }
     public float Grid(int c) => m_Grid[c];
 
+    public void SetObstacle(BaseRollable o)
+    {
+        var p = ((Orientation)o).position_GRD;
+        SetObstacle(
+            Mathf.FloorToInt(p.Item1),
+            Mathf.FloorToInt(p.Item2),
+            o
+            );
+    }
     public void SetObstacle(int z, int x, BaseRollable o) => m_Grid_Obstacles[Fold(z, x)] = o;
+    public BaseRollable Obstacle(int c) => m_Grid_Obstacles[c];
     public BaseRollable Obstacle(int z, int x) => m_Grid_Obstacles[Fold(z, x)];
 
     public bool Legal((float, float) p, (float, float) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
@@ -60,8 +71,8 @@ public class Map : MonoBehaviour
     public bool Legal((int, int) p, (int, int) q) => Legal(p.Item1, p.Item2, q.Item1, q.Item2);
     public bool Legal(int sz, int sx, int z, int x)
         => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
-        (Obstacle(z, x) == null || Obstacle(z, x) == Player.Instance) &&
-        (Grid(z, x) - Grid(sz, sx)) < 1f;
+        Obstacle(z, x) == null; // || Obstacle(z, x) == Player.Instance); // &&
+        // (Grid(z, x) - Grid(sz, sx)) < 1f;
 
     private void OnDrawGizmosSelected()
     {
@@ -69,7 +80,7 @@ public class Map : MonoBehaviour
         for(int i = 0; i < WIDTH; i++) {
             for(int j = 0; j < HEIGHT; j++) {
                 Gizmos.color = Obstacle(i, j) ? Color.red : Color.green;
-                Gizmos.DrawCube(new Vector3(j, 0.5f, i), Vector3.one * 0.5f);
+                Gizmos.DrawCube(new Vector3(j, 0.5f, i), Vector3.one * 0.2f);
             }
         }
     }
@@ -108,5 +119,20 @@ public class Map : MonoBehaviour
                 ftp.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = floorTiles[Mathf.FloorToInt(altitude)];
             }
         }
+    }
+
+    public IEnumerable<int> Adjacent(float z, float x)
+    {
+        var raw = new List<(int, int)>
+        {
+            (Mathf.FloorToInt(z-1),Mathf.FloorToInt(x)),
+            (Mathf.FloorToInt(z+1),Mathf.FloorToInt(x)),
+            (Mathf.FloorToInt(z),Mathf.FloorToInt(x+1)),
+            (Mathf.FloorToInt(z),Mathf.FloorToInt(x+1)),
+        }.Where(p => p.Item1 >= 0 && p.Item1 < WIDTH && p.Item2 >= 0 && p.Item2 < HEIGHT);
+
+        Debug.Log(string.Join(", ", raw));
+
+        return raw.Select(p => Fold(p));
     }
 }

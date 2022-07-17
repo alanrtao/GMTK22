@@ -90,10 +90,10 @@ public abstract class BaseEnemy : BaseRollable
             var right = (expCurr.Item1 - 1, expCurr.Item2);
 
             var neighbors = new List<int>();
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, up.Item1, up.Item2)) neighbors.Add(GameManager.Map.Fold(up));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, down.Item1, down.Item2)) neighbors.Add(GameManager.Map.Fold(down));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, left.Item1, left.Item2)) neighbors.Add(GameManager.Map.Fold(left));
-            if (GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, right.Item1, right.Item2)) neighbors.Add(GameManager.Map.Fold(right));
+            if ((up.Item1 == ez && up.Item2 == ex) || GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, up.Item1, up.Item2)) neighbors.Add(GameManager.Map.Fold(up));
+            if ((down.Item1 == ez && down.Item2 == ex) || GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, down.Item1, down.Item2)) neighbors.Add(GameManager.Map.Fold(down));
+            if ((left.Item1 == ez && left.Item2 == ex) || GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, left.Item1, left.Item2)) neighbors.Add(GameManager.Map.Fold(left));
+            if ((right.Item1 == ez && right.Item2 == ex) || GameManager.Map.Legal(expCurr.Item1, expCurr.Item2, right.Item1, right.Item2)) neighbors.Add(GameManager.Map.Fold(right));
 
             foreach(var n in neighbors)
             {
