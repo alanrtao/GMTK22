@@ -87,5 +87,7 @@ public class Items : MonoBehaviour
                 Player.Instance.NextAtkMultiplier += 1;
             }
         }
+
+        if (Name == "")
     }
 }

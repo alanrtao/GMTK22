@@ -183,7 +183,8 @@ public abstract class BaseRollable : MonoBehaviour
         return min;
     }
 
-    protected int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
+    //2 5 4 3 6 1;
+    public int[] OrderedFaces() => Faces0.Select(f => f.Item2).Select(dir => FindClosestCurrFace(dir)).ToArray();
 
 
 

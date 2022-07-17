@@ -93,17 +93,22 @@ public abstract class Player : BaseRollable
         {
             MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
         }
+
+        Debug.Log(damage);
+        NextAtkDmg += damage; 
         NextAtkDmg *= NextAtkMultiplier;
+
+        damage = NextAtkDmg;
         if (this is Warrior) 
         {
             
 
 
         }
-        Wuso += damage;
+        Wuso += NextAtkDmg;
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
-        Debug.Log($"Dealing {damage} damage");
-        StartCoroutine(PlayOneshot(AttackAction(enemy, damage, renderAnimation)));
+        Debug.Log($"Dealing {NextAtkDmg} damage");
+        StartCoroutine(PlayOneshot(AttackAction(enemy, NextAtkDmg, renderAnimation)));
     }
 
     public IEnumerator PlayOneshot(ActionStage action)

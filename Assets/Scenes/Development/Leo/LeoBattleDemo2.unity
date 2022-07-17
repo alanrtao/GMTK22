@@ -1211,8 +1211,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 2093907680}
   m_vCam: {fileID: 1149956569}
   Faces: 
@@ -1312,8 +1312,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 1473315272}
   m_vCam: {fileID: 717072673}
   Faces: 
@@ -1534,8 +1534,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 13152197}
   m_vCam: {fileID: 1629205230}
   Faces: 
@@ -2023,6 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4179312304f2425bbe49d7ee86aff5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InEnemyTurn: 0
 --- !u!4 &652899385
 Transform:
   m_ObjectHideFlags: 0
@@ -3005,8 +3006,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 2132623487}
   m_vCam: {fileID: 783486954}
   Faces: 
@@ -4328,8 +4329,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 128059892}
   m_vCam: {fileID: 813423711}
   Faces: 
@@ -5109,8 +5110,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: 0
-  MAX_HP: 12
-  m_HP: 12
+  MAX_HP: 10
+  m_HP: 10
   m_RollableRoot: {fileID: 1555053240}
   m_vCam: {fileID: 784547380}
   Faces: 
