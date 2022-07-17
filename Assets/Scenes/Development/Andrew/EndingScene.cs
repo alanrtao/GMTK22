@@ -10,19 +10,23 @@ public class EndingScene : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+
+
+    //note here:
+    //when space or mouse left click is detected, go to "menu scene" level
+
     void Update()
     {
         if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
         {
-            Debug.Log("enter pressed");
+            //Debug.Log("enter pressed");
             LoadScene();
         }
     }
 
     void LoadScene()
     {
-        //change the level here
+        //change the level here, if you want
         Application.LoadLevel("Menu Scene");
     }
 }

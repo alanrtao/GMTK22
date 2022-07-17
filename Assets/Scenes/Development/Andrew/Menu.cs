@@ -10,12 +10,14 @@ public class Menu : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    //note here:
+    //when space or mouse left click is detected, go to "placeholder" level
+
     void Update()
     {
         if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
         {
-            Debug.Log("enter pressed");
+            //Debug.Log("enter pressed");
             LoadScene();
         }
     }
@@ -23,7 +25,7 @@ public class Menu : MonoBehaviour
     void LoadScene()
     {   
         //change the level here
-        Application.LoadLevel("Demo3");
+        Application.LoadLevel("Demo3"); //<----placeholder level, need to change
     }
 
 }
