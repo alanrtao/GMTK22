@@ -79,7 +79,6 @@ public class Map : MonoBehaviour
         var o = Obstacle(z, x);
         if (o != null)
         {
-            Debug.Log($"Handling tricky case with { o.gameObject.name }");
             if (o is T) return false;
         }
         return true;

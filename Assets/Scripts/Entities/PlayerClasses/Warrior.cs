@@ -16,21 +16,24 @@ public class Warrior : Player
         var wuBuf = wuso;
 
         var pBuf = transform.position;
-        var rBuf = transform.rotation;
+        var rBuf = m_RollableRoot.localRotation;
+        var vCamBuf = vCam.m_Lens.OrthographicSize;
 
         List<ActionStage> stages = new List<ActionStage>()
         {
-            new ActionStage(0.5f, (t) =>
+            new ActionStage(0.25f, (t) =>
             {
+                vCam.m_Lens.OrthographicSize = vCamBuf - (1 - (1 - t) * (1 - t)) * 0.2f;
                 transform.position = pBuf + Vector3.up * (1 - (1 - t) * (1 - t));
-                RollableRoot.rotation = Quaternion.AngleAxis(MathExtensions.EaseInOutCubic(t) * 360, Vector3.up) * rBuf;
+                // m_RollableRoot.localRotation = Quaternion.AngleAxis(MathExtensions.EaseInOutCubic(t) * 360, Vector3.up) * rBuf;
             }),
-            new ActionStage(0.5f, (t) =>
+            new ActionStage(0.25f, (t) =>
             {
                 if (t == 1)
                 {
+                    vCam.m_Lens.OrthographicSize = vCamBuf;
                     transform.position = pBuf;
-                    RollableRoot.rotation = Quaternion.AngleAxis(180, Vector3.right) * rBuf;
+                    m_RollableRoot.localRotation = Quaternion.AngleAxis(180, Vector3.right) * rBuf;
                     UpdateFaces(this);
 
                     var upNum = FindClosestCurrFace(Vector3.up);
@@ -41,10 +44,15 @@ public class Warrior : Player
                         .Where(e => e != null)
                         .ForEach(e => Attack(upNum, e, false));
 
+                    collisionSource.GenerateImpulse(1 + Mathf.Log(upNum));
+
                     return;
                 }
+
+                Debug.Log(t * t);
                 RollableRoot.rotation = Quaternion.AngleAxis(t * t * 180, Vector3.right) * rBuf;
                 transform.position = pBuf + Vector3.up * (1 - t * t);
+                vCam.m_Lens.OrthographicSize = vCamBuf - (1 - t * t) * 0.2f;
             }),
             new ActionStage(ultimateVfx.Count * Time.maximumDeltaTime, (t) => {
                 if (t == 0) ultimateVfx.gameObject.SetActive(true);

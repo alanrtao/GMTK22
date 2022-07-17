@@ -25,7 +25,7 @@ public abstract class BaseRollable : MonoBehaviour
     [SerializeField] protected int m_HP;
 
     public Transform RollableRoot => m_RollableRoot;
-    [SerializeField] Transform m_RollableRoot;
+    [SerializeField] protected Transform m_RollableRoot;
 
     public CinemachineVirtualCamera vCam => m_vCam;
     [SerializeField] private CinemachineVirtualCamera m_vCam;
@@ -78,6 +78,9 @@ public abstract class BaseRollable : MonoBehaviour
             var p0 = (Mathf.RoundToInt(transform.position.z), Mathf.RoundToInt(transform.position.x));
             GameManager.Map.SetObstacle(p0.Item1, p0.Item2, this);
             IsMoving = false;
+            transform.position = new Vector3(Mathf.RoundToInt(transform.position.x), transform.position.y, Mathf.RoundToInt(transform.position.z));
+            //m_RollableRoot.up = new Vector3[] { Vector3.up, Vector3.down, Vector3.forward, Vector3.back, Vector3.left, Vector3.right }
+            //    .OrderBy(s => Vector3.Distance(m_RollableRoot.up, s)).First();
             UpdateFaces(end);
         }
 
@@ -85,8 +88,10 @@ public abstract class BaseRollable : MonoBehaviour
     }
 
     public static readonly float tMove = 0.25f;
-    protected bool IsMoving = false;
+    public bool IsMoving = false;
     protected IEnumerator RLerp(Action<Orientation> complete = null) {
+
+        IsMoving = true;
         float t_ = 0;
 
         if (pending.Count == 0)
@@ -120,6 +125,7 @@ public abstract class BaseRollable : MonoBehaviour
         {
             complete(end);
             yield return new WaitForSeconds(0.1f);
+            IsMoving = false;
         }
         else
             StartCoroutine(RLerp(complete));
@@ -226,29 +232,40 @@ public abstract class BaseRollable : MonoBehaviour
     private Quaternion bufR;
     protected ActionStage AttackAction(BaseRollable target, int attack, bool renderAnimation = true) => new ActionStage(0.25f, (t) =>
     {
-        if (t == 0) {
+        if (t == 0)
+        {
             target.HP -= attack;
-            bufP = transform.position;
-            bufR = RollableRoot.rotation;
+            if (renderAnimation)
+            {
+                bufP = transform.position;
+                bufR = RollableRoot.rotation;
+            }
             return;
         } else if (t == 1)
         {
-            transform.position = bufP;
-            RollableRoot.rotation = bufR;
-            bufP = Vector3.zero;
-            bufR = Quaternion.identity;
+            if (renderAnimation)
+            {
+                transform.position = bufP;
+                RollableRoot.rotation = bufR;
+                bufP = Vector3.zero;
+                bufR = Quaternion.identity;
+            }
             return;
-        } else if (!renderAnimation) return;
+        }
 
-        var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
-        var parab = 1 - (1 - prog) * (1 - prog);
+        if (renderAnimation)
+        {
 
-        transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+            var prog = 1 - 2 * Mathf.Abs(t - 0.5f);
+            var parab = 1 - (1 - prog) * (1 - prog);
 
-        RollableRoot.rotation = Quaternion.AngleAxis(
-            parab * 10f,
-            Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
-            bufR;
+            transform.position = bufP + new Vector3(0, parab * 0.2f, 0) + (target.transform.position - bufP) * 0.2f * prog;
+
+            RollableRoot.rotation = Quaternion.AngleAxis(
+                parab * 10f,
+                Vector3.Cross(Vector3.up, target.transform.position - transform.position)) *
+                bufR;
+        }
     });
 
     protected ActionStage PauseAction(float t) => new ActionStage(t, _ => { });

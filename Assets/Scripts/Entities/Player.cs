@@ -92,6 +92,7 @@ public abstract class Player : BaseRollable
             yield return new WaitForEndOfFrame();
         }
         action.Do(1);
+        yield return new WaitForEndOfFrame();
         blocked = false;
     }
 
