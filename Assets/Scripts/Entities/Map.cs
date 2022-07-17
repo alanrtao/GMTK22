@@ -71,7 +71,7 @@ public class Map : MonoBehaviour
     //    => z >= 0 && z < WIDTH && x >= 0 && x < HEIGHT &&
     //    Obstacle(z, x) == null; // || Obstacle(z, x) == Player.Instance); // &&
     //    // (Grid(z, x) - Grid(sz, sx)) < 1f;
-
+    
     public bool Legal<T> (int z, int x) where T:BaseRollable
     {
         if (z < 0 || z >= WIDTH || x < 0 || x >= HEIGHT) return false;

@@ -82,6 +82,8 @@ public abstract class BaseRollable : MonoBehaviour
             //m_RollableRoot.up = new Vector3[] { Vector3.up, Vector3.down, Vector3.forward, Vector3.back, Vector3.left, Vector3.right }
             //    .OrderBy(s => Vector3.Distance(m_RollableRoot.up, s)).First();
             UpdateFaces(end);
+
+            //AfterMovement <--
         }
 
         StartCoroutine(RLerp(terminate));
@@ -220,7 +222,7 @@ public abstract class BaseRollable : MonoBehaviour
     public void AddToAllFaces(int add)
     {
         m_Faces = m_Faces.Select(s => {
-            s.Item1 -= add;
+            s.Item1 += add;
             if (s.Item1 < 0) s.Item1 = 0;
             return s;
         }).ToArray();

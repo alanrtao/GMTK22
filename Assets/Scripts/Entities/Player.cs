@@ -12,6 +12,11 @@ public abstract class Player : BaseRollable
     public int MAX_STAMINA;
     protected int stamina;
 
+    [Header("The Damage Next Attack is going to deal")]
+    public int NextAtkDmg;
+    public int NextAtkMultiplier;
+
+    public PlayerItems MyItems;
     public int wuso = 0;
 
     void Awake()
@@ -59,10 +64,12 @@ public abstract class Player : BaseRollable
                 Ultimate();
             } else if (Input.GetKeyDown(KeyCode.Return))
             {
+                Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
                 GameManager.Pool.StartEnemyTurns();
             }
         } else
         {
+            Player.Instance.MyItems.ActivateAllItems(Items.ActivateStates.EndTurn);
             GameManager.Pool.StartEnemyTurns();
         }
     }
@@ -72,6 +79,11 @@ public abstract class Player : BaseRollable
     [SerializeField] protected BaseAnimation normalAttackVfx, ultimateVfx;
     public virtual void Attack(int damage, BaseEnemy enemy, bool renderAnimation = true)
     {
+        MyItems.ActivateAllItems(Items.ActivateStates.BeforeAttack);
+        if (this is Warrior) 
+        {
+            //NextAtkDmg += FindClosestCurrFace(Vector3.up);
+        }
         wuso += damage;
         if (renderAnimation) normalAttackVfx.gameObject.SetActive(true);
         Debug.Log($"Dealing {damage} damage");
@@ -166,6 +178,7 @@ public abstract class Player : BaseRollable
 
             yield return new WaitForEndOfFrame();
         }
+
         blocked = false;
     }
 }
