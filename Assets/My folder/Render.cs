@@ -32,8 +32,12 @@ public class Render : MonoBehaviour
                 if(Vector3.Dot(mesh[i].transform.forward, Camera.main.transform.forward) > 0)
                 {
                     mesh[i].enabled = false;
+<<<<<<< Updated upstream:Assets/My folder/Render.cs
                     //Debug.Log("render diabled" + i);
                     //will not enable render after key is released
+=======
+                    
+>>>>>>> Stashed changes:Assets/Scenes/Development/Andrew/Render.cs
                 }
                 else
                 {
