@@ -64,7 +64,7 @@ public class FloatNumberManager : MonoBehaviour
                 break;
             case 2:
                 //Debug.Log("2");
-                clone = Instantiate(numberType[1], target.transform.position + new Vector3(0,5,0), Quaternion.identity);
+                clone = Instantiate(numberType[1], target.transform.position + new Vector3(0, 5,0), Quaternion.identity);
 
                 clone.transform.GetChild(0).GetComponent<TextMeshPro>().text = input.ToString();
 

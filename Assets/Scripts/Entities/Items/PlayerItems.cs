@@ -16,7 +16,7 @@ public class PlayerItems : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            PickUpItem(3);
+            PickUpItem(1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) 
