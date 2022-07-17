@@ -25,11 +25,12 @@ public class HealthBar : MonoBehaviour
     {
         if (isCriticalBar && MyMaster is Player)
         {
-            
+            Color Glow;
+            Glow = new Color(1, 1, 1, 0) * Mathf.Sin(Time.realtimeSinceStartup * 10) * 0.1f;
             if ((MyMaster as Player).Wuso >= 20)
             {
                 Number.text = "Ultimate Rdy!";
-                MyBar.color = Color.red;
+                MyBar.color = Color.red + Glow;
             }
             else 
             {
