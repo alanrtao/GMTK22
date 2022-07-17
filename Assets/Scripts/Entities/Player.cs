@@ -24,7 +24,7 @@ public abstract class Player : BaseRollable
         set
         {
             if (value != m_Wuso) {
-                m_Wuso = Mathf.Min(24, Mathf.Max(0, value));
+                m_Wuso = Mathf.Min(20, Mathf.Max(0, value));
                 Debug.Log($"Player wuso changed to {m_Wuso}");
             }
         }

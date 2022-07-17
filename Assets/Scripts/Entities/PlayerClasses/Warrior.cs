@@ -15,7 +15,7 @@ public class Warrior : Player
 
     public override void Ultimate()
     {
-        if (Wuso >= 24) Wuso -= 24;
+        if (Wuso >= 20) Wuso -= 20;
         else return;
 
         blocked = true;
