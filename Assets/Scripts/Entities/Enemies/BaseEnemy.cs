@@ -6,30 +6,14 @@ using System;
 
 public abstract class BaseEnemy : BaseRollable
 {
-    public int HP
-    {
-        get => m_HP;
-        set
-        {
-            if (value != m_HP)
-            {
-                m_HP = Mathf.Max(0, value);
-                if (m_HP == 0) Die();
-            }
-        }
-    }
-    [SerializeField] protected int m_HP;
-
     public List<ActionStage> stages;
     public float ActionStagesTime => stages.Select(a => a.t).Sum();
 
     public abstract void UpdateStages(int index);
 
-
-    public virtual void TakeDamage(int damage) => HP -= damage;
-
-    protected virtual void Die() {
+    protected override void Die() {
         GameManager.Pool.Pool.Remove(this);
+        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), null);
         gameObject.SetActive(false);
     }
 
@@ -66,18 +50,18 @@ public abstract class BaseEnemy : BaseRollable
 
     protected virtual float Heuristic(int ez, int ex, int z, int x) => Mathf.Sqrt((ez - z) * (ez - z) + (ex - x) * (ex - x));
 
-    protected List<Direction> AStar(int sz, int sx, int ez, int ex, int max_step)
+    protected (List<(int, int)>, List<Direction>) AStar(int sz, int sx, int ez, int ex)
     {
-
-        Debug.Log($"Enemy {GetInstanceID()} try move from {sz},{sx} to {ez},{ex}");
-
+        // Debug.Log($"Find path from {sz}, {sx} to {ez}, {ex}");
         var start = GameManager.Map.Fold(sz, sx);
         var goal = GameManager.Map.Fold(ez, ex);
 
         var open = new List<int> { start };
+
         var cameFrom = new int[GameManager.Map.Count];
         var g = new float[GameManager.Map.Count];
         var f = new float[GameManager.Map.Count];
+
         for (int i = 0; i < cameFrom.Length; i++) {
             cameFrom[i] = -1;
             g[i] = int.MaxValue;
@@ -90,8 +74,10 @@ public abstract class BaseEnemy : BaseRollable
         while(open.Count > 0)
         {
             var curr = open.OrderBy(i => f[i]).First();
+            // Debug.Log(GameManager.Map.Expand(curr));
             if (curr == goal)
             {
+                // Debug.Log("hit!");
                 return Reconstruct(cameFrom, curr); //.Take(max_step).ToList();
             }
 
@@ -112,6 +98,7 @@ public abstract class BaseEnemy : BaseRollable
             foreach(var n in neighbors)
             {
                 var gTentative = g[curr] + GameManager.Map.Weight(curr, n);
+                // Debug.Log($"... neighbor {GameManager.Map.Expand(n)} has g { g[n] } vs. { gTentative }");
                 if (gTentative < g[n])
                 {
                     cameFrom[n] = curr;
@@ -124,10 +111,10 @@ public abstract class BaseEnemy : BaseRollable
             }
         }
 
-        return new List<Direction>();
+        return (new List<(int, int)>(), new List<Direction>());
     }
 
-    private List<Direction> Reconstruct(int[] cameFrom, int curr)
+    private (List<(int, int)>, List<Direction>) Reconstruct(int[] cameFrom, int curr)
     {
         var total = new List<(int, int)> { GameManager.Map.Expand(curr) };
         while (cameFrom[curr] != -1)
@@ -164,7 +151,9 @@ public abstract class BaseEnemy : BaseRollable
             }
         }
 
-        return ds;
+        total.Reverse();
+        total.RemoveAt(0);
+        return (total, ds);
     }
 
 
@@ -193,11 +182,4 @@ public abstract class BaseEnemy : BaseRollable
         });
     #endregion
 
-    public class ActionStage
-    {
-        public float t;
-        public Action<float> Do;
-
-        public ActionStage(float t, Action<float> Do) { this.t = t; this.Do = Do; }
-    }
 }

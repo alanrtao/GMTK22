@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 
 public class Player : BaseRollable
 {
     public static Player Instance { get; private set; }
 
     public int MAX_STAMINA;
-    public int stamina;
+    protected int stamina;
 
     void Awake()
     {
@@ -19,6 +21,8 @@ public class Player : BaseRollable
     {
         base.Start();
         blocked = false;
+
+        GameManager.Map.SetObstacle(Mathf.FloorToInt(transform.position.z), Mathf.FloorToInt(transform.position.x), this);
         Turn();
     }
 
@@ -60,7 +64,23 @@ public class Player : BaseRollable
 
     public virtual void Attack(int damage, BaseEnemy enemy)
     {
-        enemy.TakeDamage(damage);
+        Debug.Log($"Dealing {damage} damage");
+        StartCoroutine(PlayOneshot(AttackAction(enemy, damage)));
+    }
+
+    public IEnumerator PlayOneshot(ActionStage action)
+    {
+        float t = 0;
+        action.Do(0);
+        yield return new WaitForEndOfFrame();
+        t += Time.deltaTime;
+        while (t < action.t)
+        {
+            action.Do(t / action.t);
+            t += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        action.Do(1);
     }
 
     public override void Move(Direction d)
@@ -74,13 +94,14 @@ public class Player : BaseRollable
             {
                 stamina = Mathf.Max(0, stamina - 1);
                 var top = FindClosestCurrFace(Vector3.up);
+                Debug.Log(string.Join(", ", OrderedFaces()));
                 Attack(top, e);
                 Debug.Log($"Player attacks enemy at {pred.position_GRD}");
                 return;
             }
         }
 
-        Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
+        // Debug.Log($"Player: {curr.position_GRD} => {pred.position_GRD}");
 
         if (GameManager.Map.Legal(pred.position_GRD))
         {
@@ -95,5 +116,36 @@ public class Player : BaseRollable
     public void Turn()
     {
         stamina = MAX_STAMINA;
+    }
+
+    protected override void Die()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    [SerializeField] PostProcessProfile profile;
+    const float tDamage = 0.5f;
+    protected override IEnumerator TakeDamageAnimation(int damage)
+    {
+        collisionSource.GenerateImpulse(1 + Mathf.Log(damage));
+        yield return new WaitForFixedUpdate();
+        float t = 0;
+
+        var vignette = profile.GetSetting<Vignette>();
+        while (t < tDamage * (1 + Mathf.Log(damage)))
+        {
+            var p = t / tDamage;
+            t += Time.deltaTime;
+
+            var c = vignette.color;
+            c.value = ColorExtensions.LerpOpaque(Color.red, Color.black, 1 - Mathf.Pow(1 - p, 3));
+            vignette.color = c;
+
+            var i = vignette.intensity;
+            i.value = 0.2f * (1 - Mathf.Pow(1 - p, 3));
+            vignette.intensity = i;
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
