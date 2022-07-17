@@ -62,7 +62,7 @@ public class Items : MonoBehaviour
             {
                 if (Player.Instance.FindClosestIdxFace(Vector3.up) == Player.OriginalNumberToIndex(1)) 
                 {
-                    Player.Instance.NextAtkMultiplier *=  2;
+                    Player.Instance.NextAtkMultiplier +=  2;
                 }
             }
         }
@@ -77,6 +77,14 @@ public class Items : MonoBehaviour
             if (CurrentState == ActivateStates.EndTurn) 
             {
                 Player.Instance.ChangeHPBy(-2);
+            }
+        }
+
+        if (Name == "Double Edge")
+        {
+            if (CurrentState == ActivateStates.Manual)
+            {
+                Player.Instance.NextAtkMultiplier += 1;
             }
         }
     }

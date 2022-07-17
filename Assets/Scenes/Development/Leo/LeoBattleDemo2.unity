@@ -1210,6 +1210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 2093907680}
@@ -1310,6 +1311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 1473315272}
@@ -1531,6 +1533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 13152197}
@@ -3001,6 +3004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 2132623487}
@@ -3900,6 +3904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe1ea3a562194d87b8fef0071ad6e51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 40
   m_HP: 40
   m_RollableRoot: {fileID: 220681027}
@@ -4099,6 +4104,14 @@ PrefabInstance:
       propertyPath: ItemLibrary.Array.data[3].ItemIntro
       value: 'Activate: Next attack deals double dmg but you will take half of that
         damage.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[2].CardCharacter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6126166021215761316, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
+      propertyPath: ItemLibrary.Array.data[3].CardCharacter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6126166021215761317, guid: 0f7a5d6a599ec914fb973f6524ac0766, type: 3}
       propertyPath: m_RootOrder
@@ -4314,6 +4327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 128059892}
@@ -5094,6 +5108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c239816d8ba3472a8847c8c015c8fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shield: 0
   MAX_HP: 12
   m_HP: 12
   m_RollableRoot: {fileID: 1555053240}
