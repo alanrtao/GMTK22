@@ -1484,13 +1484,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83084d2442654d6091f6d47ed8d1c5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mesh:
-  - {fileID: 1434976176}
-  - {fileID: 1231050722}
-  - {fileID: 122637761}
-  - {fileID: 1050788134}
-  - {fileID: 506864622}
-  - {fileID: 1031331971}
 --- !u!212 &1434976176
 SpriteRenderer:
   m_ObjectHideFlags: 0
