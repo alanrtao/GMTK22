@@ -19,7 +19,7 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
-        HealthNumber.text = MyMaster.MAX_HP + " / " + MyMaster.HP;
+        HealthNumber.text = MyMaster.HP + " / " + MyMaster.MAX_HP;
         MyBar.rectTransform.localScale = new Vector2((float)MyMaster.HP / (float)MyMaster.MAX_HP * InitialScale.x, InitialScale.y);
     }
 }
